@@ -92,6 +92,6 @@ rooms = {
     "Hallway": room_hallway,
     "Lounge": room_living_room,
     "Office": room_office,
-    "Kitchen": room_kitchen
+    "Kitchen": room_kitchen,
     "Outside": room_outside
 }

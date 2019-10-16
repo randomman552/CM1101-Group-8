@@ -2,12 +2,10 @@
 import os
 #Getch is used to get key presses (only works on windows, I will add code for other OS's shortly).
 from msvcrt import getch
-
-
+import keyboard
 #Max width and height settings, used to define the size command prompt window and for positioning of UI elements.
 maxwidth = 180
 maxheight = 50
-
 def calc_logo_size(logo_as_lines):
     """Gets the size of the logo inputted. Used in main menu
     The value is returned as a list with the width first, followed by the length
@@ -45,10 +43,14 @@ def update_display(logo,selection,options):
         else:
             print((" " * spacing) + line)
 
-def main_menu():
+def key_press():
+    return ord(getch())
+    
+def main_menu(options = ["New game ", "Load game", "Quit     "]):
     """Handles the main menu.
     When an option is selected and space or enter are pressed, 
     a number corresponding to the selected option is returned.
+    Options can be configured by changing the
     """
     #Defines size of window
     os.system("mode con: cols="+ str(maxwidth) + " lines="+ str(maxheight))
@@ -66,13 +68,13 @@ def main_menu():
     #Split the logo into lines
     gamelogo = gamelogo.splitlines()
     current_selection = 0
-    options = ["New game ", "Load game", "Quit     "]
-    update_display(gamelogo,current_selection,options)
+    maximum_selection = len(options) - 1
     while True:
         #Main display loop
         os.system("cls")
         update_display(gamelogo,current_selection,options)
-        keypressed = ord(getch())
+        keypressed = key_press()
+        print(keypressed)
         if (keypressed == 80) or (keypressed == 115):
             #If down arrow key or s is pressed,
             current_selection += 1
@@ -83,8 +85,10 @@ def main_menu():
             break
         #Check if current_selection is within its bounds.
         #If it isn't set it to the opposite extreme.
-        if current_selection > 2:
+        if current_selection > maximum_selection:
             current_selection = 0
         elif current_selection < 0:
-            current_selection = 2
+            current_selection = maximum_selection
     return current_selection
+
+option = main_menu()

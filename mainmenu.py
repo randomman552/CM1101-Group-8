@@ -45,7 +45,7 @@ def update_display(logo,selection,options):
 
 def key_press():
     return ord(getch())
-    
+
 def main_menu(options = ["New game ", "Load game", "Quit     "]):
     """Handles the main menu.
     When an option is selected and space or enter are pressed, 
@@ -90,5 +90,3 @@ def main_menu(options = ["New game ", "Load game", "Quit     "]):
         elif current_selection < 0:
             current_selection = maximum_selection
     return current_selection
-
-option = main_menu()

@@ -14,17 +14,8 @@ def is_valid_exit(exits, chosen_exit):
     a players's choice "chosen_exit" whether the player has chosen a valid exit.
     It returns True if the exit is valid, and False otherwise. Assume that
     the name of the exit has been normalised by the function normalise_input().
-    For example:
+    For example:"""
 
-    >>> is_valid_exit(rooms["Reception"]["exits"], "south")
-    True
-    >>> is_valid_exit(rooms["Reception"]["exits"], "up")
-    False
-    >>> is_valid_exit(rooms["Parking"]["exits"], "west")
-    False
-    >>> is_valid_exit(rooms["Parking"]["exits"], "east")
-    True
-    """
     return chosen_exit in exits
 
 def calc_inven_mass(inventory):
@@ -146,16 +137,8 @@ def execute_command(command):
 def print_exit(direction, leads_to):
     """This function prints a line of a menu of exits. It takes a direction (the
     name of an exit) and the name of the room into which it leads (leads_to),
-    and should print a menu line in the following format:
+    and should print a menu line in the following format:"""
 
-    GO <EXIT NAME UPPERCASE> to <where it leads>.
-
-    For example:
-    >>> print_exit("east", "you personal tutor's office")
-    GO EAST to you personal tutor's office.
-    >>> print_exit("south", "MJ and Simon's room")
-    GO SOUTH to MJ and Simon's room.
-    """
     print("GO " + direction.upper() + " to " + leads_to + ".")
 
 def print_take_item(item):
@@ -171,15 +154,8 @@ def print_drop_item(item):
 def exit_leads_to(exits, direction):
     """This function takes a dictionary of exits and a direction (a particular
     exit taken from this dictionary). It returns the name of the room into which
-    this exit leads. For example:
+    this exit leads. For example:"""
 
-    >>> exit_leads_to(rooms["Reception"]["exits"], "south")
-    "MJ and Simon's room"
-    >>> exit_leads_to(rooms["Reception"]["exits"], "east")
-    "your personal tutor's office"
-    >>> exit_leads_to(rooms["Tutor"]["exits"], "west")
-    'Reception'
-    """
     return rooms[exits[direction]]["name"]
 
 def print_menu(exits, room_items, inv_items):
@@ -190,28 +166,8 @@ def print_menu(exits, room_items, inv_items):
     call the function print_exit() to print the information about each exit in
     the appropriate format. The room into which an exit leads is obtained
     using the function exit_leads_to(). Then, it should print a list of commands
-    related to items: for each item in the room print
+    related to items:"""
 
-    "TAKE <ITEM ID> to take <item name>."
-
-    and for each item in the inventory print
-
-    "DROP <ITEM ID> to drop <item name>."
-
-    For example, the menu of actions available at the Reception may look like this:
-
-    You can:
-    GO EAST to your personal tutor's office.
-    GO WEST to the parking lot.
-    GO SOUTH to MJ and Simon's room.
-    TAKE BISCUITS to take a pack of biscuits.
-    TAKE HANDBOOK to take a student handbook.
-    DROP ID to drop your id card.
-    DROP LAPTOP to drop your laptop.
-    DROP MONEY to drop your money.
-    What do you want to do?
-
-    """
     print("You can:")
     # Iterate over available exits.
     for direction in exits:
@@ -251,15 +207,7 @@ def menu(exits, room_items, inv_items):
 def move(exits, direction):
     """This function returns the room into which the player will move if, from a
     dictionary "exits" of avaiable exits, they choose to move towards the exit
-    with the name given by "direction". For example:
-
-    >>> move(rooms["Reception"]["exits"], "south") == rooms["Admins"]
-    True
-    >>> move(rooms["Reception"]["exits"], "east") == rooms["Tutor"]
-    True
-    >>> move(rooms["Reception"]["exits"], "west") == rooms["Office"]
-    False
-    """
+    with the name given by "direction". For example:"""
 
     # Next room to go to
     return rooms[exits[direction]]

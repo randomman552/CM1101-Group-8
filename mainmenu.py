@@ -45,7 +45,7 @@ def update_display(logo,selection,options):
 def key_press():
     return ord(getch())
 
-def main_menu(options = ["New game ", "Load game", "Quit     "]):
+def menu(options = ["New game ", "Load game", "Quit     "]):
     """Handles the main menu.
     When an option is selected and space or enter are pressed, 
     a number corresponding to the selected option is returned.

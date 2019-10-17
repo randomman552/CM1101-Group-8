@@ -7,7 +7,8 @@ item_medication = {
     "description":
     """This is your medication""",
     #Weight is used with the inventory weight system, this can just be set to 0 if you dont want to use it
-    "weight": 0
+    "weight": 0,
+    "use":"You taake the medication, it appears to have no immediete effect."
 }
 
 #Contains a list of all items in the game, with an identifier.

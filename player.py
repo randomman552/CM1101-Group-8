@@ -26,7 +26,8 @@ player = {
     },
     "memory": {
         "name": Get_Player_Name(),
-        "age": Get_Player_Age()
+        "age": Get_Player_Age(),
+        "password": [] #Placeholder, for use in password puzzle?
     }
 }
 
@@ -40,5 +41,5 @@ def Name_Shuffle(name):
 max_carry_weight = 2
 inventory = []
 
-# Start game at the reception
+# Start game in the bedroom
 current_room = rooms["Bedroom"]

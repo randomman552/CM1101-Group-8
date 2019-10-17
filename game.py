@@ -4,6 +4,7 @@ from items import *
 from gameparser import *
 import os
 import mainmenu
+os.system("mode con: cols="+ str(mainmenu.maxwidth) + " lines="+ str(mainmenu.maxheight))
 from player import *
 
 
@@ -97,23 +98,20 @@ def execute_take(item_id):
     there is no such item in the room, this function prints
     "You cannot take that."
     """
-    #Check if the player has enough space in their inventory to pick up the item.
-    #If they dont print an error and return.
-    inventory_mass = calc_inven_mass(inventory) + items[item_id]["weight"]
-    if inventory_mass > max_carry_weight:
-        print("You cannot carry any more.")
-        return 0
     #Check if the item exists
     if item_id in items:
         item_id = items[item_id]
-        if item_id in current_room["items"]:
-            inventory.append(item_id)
-            current_room["items"].remove(item_id)
-            print("Picked up " + item_id["name"] + ".")
+        if item_id["take"] == True:
+            if item_id in current_room["items"]:
+                inventory.append(item_id)
+                current_room["items"].remove(item_id)
+                print("Picked up " + item_id["name"] + ".")
+            else:
+                print("You cannot take that.")
         else:
             print("You cannot take that.")
     else:
-        print("That item does not exist.")
+        print("You cannot take that.")
 
 def execute_drop(item_id):
     """This function takes an item_id as an argument and moves this item from the
@@ -150,7 +148,7 @@ def execute_inspect(item_id):
         #If item is in inventory or in the current room
         if item_id in inventory or item_id in current_room["items"]:
             #Print item description
-            print(item_id["name"] + ":")
+            print(item_id["id"] + ":")
             print(item_id["description"])
             #deep_inspect(item_id) Can be readded once items are fully finished
         else:
@@ -185,12 +183,11 @@ def execute_use(item_id):
     if item_id in items:
         item_id = items[item_id]
         #Check if its in the players inventory
-        if item_id in inventory:
+        if (item_id in inventory) or (item_id in current_room["items"]):
             #Check if it's usable
             if "use" in item_id:
-                pass 
-                #Need code refering to effect of an item when used
-                #Does using an item remove it from the inventory?
+                print(item_id["id"] + ":")
+                print(item_id["use"])
             else:
                 #Tell the player they can't use it
                 print("You cannot use that.")
@@ -255,18 +252,50 @@ def print_exit(direction, leads_to):
     """This function prints a line of a menu of exits. It takes a direction (the
     name of an exit) and the name of the room into which it leads (leads_to),
     and should print a menu line in the following format:"""
-
     print("GO " + direction.upper() + " to " + leads_to + ".")
 
-def print_take_item(item):
-    """This function prints a line of a menu of items which can be taken"""
-    print("TAKE " + item["id"].upper() + " to take " + item["name"] + ".")
+def print_take_item(items):
+    """This function prints a menu of items which can be taken from the current room"""
+    printstr = ""
+    for item in items:
+        if item["take"] == True:
+            printstr += ", " + item["id"]
+    if not(printstr == ""):
+        print("You can TAKE: ")
+        printstr = printstr[2::]
+        print(printstr + "\n")
 
-def print_drop_item(item):
-    """This function prints a line of a menu of items which can be dropped"""
-    print("DROP " + item["id"].upper() + " to drop " + item["name"] + ".")
+def print_drop_item(items):
+    """This function prints a menu of items which can be dropped"""
+    printstr = ""
+    for item in items:
+            printstr += ", " + item["id"]
+    if not(printstr == ""):
+        print("You can DROP: ")
+        printstr = printstr[2::]
+        print(printstr + "\n")
 
+def print_use_item(items):
+    """This function prints a list of items which can be used"""
+    printstr = ""
+    for item in items:
+        if "use" in item:
+            printstr += ", " + item["id"]
+    if not(printstr == ""):
+        print("You can USE: ")
+        printstr = printstr[2::]
+        print(printstr + "\n")
 
+def print_inspect_item(items):
+    """Prints list of items which can be inspected"""
+    printstr = ""
+    for item in items:
+        if ("description" in item) or ("inspection" in item):
+            printstr += ", " + item["id"]
+    if not(printstr == ""):
+        print("You can INSPECT: ")
+        printstr = printstr[2::]
+        print(printstr + "\n")
 
 def exit_leads_to(exits, direction):
     """This function takes a dictionary of exits and a direction (a particular
@@ -291,12 +320,13 @@ def print_menu(exits, room_items, inv_items):
         # Print the exit name and where it leads to.
         print_exit(direction, exit_leads_to(exits, direction))
     #Print the items which you can take.
-    for item in current_room["items"]:
-        print_take_item(item)
-    #Print the items which you can drop
-    for item in inventory:
-        print_drop_item(item)
-        
+    print_take_item(current_room["items"])
+    #Print the items which you can drop.
+    print_drop_item(inventory)
+    #Print the items which you can use.
+    print_use_item(inventory + current_room["items"])
+    #Print the items which you can inspect
+    print_inspect_item(inventory + current_room["items"])
     
     print("What do you want to do?")
 

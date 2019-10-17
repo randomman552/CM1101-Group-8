@@ -143,6 +143,13 @@ def execute_inspect(item_id):
     else:
         print("That item does not exist.")
 
+def execute_remember(command):
+    if command == "":
+        for memory in player["memory"]:
+            print(memory)
+    else:
+        print(player["memory"[command]])
+
 def execute_command(command):
     """This function takes a command (a list of words as returned by
     normalise_input) and, depending on the type of action (the first word of
@@ -177,7 +184,10 @@ def execute_command(command):
             execute_inspect(command[1])
         else:
             print("Inspect what?")
-    
+    elif command[0] == "remember":
+        if len(command) > 1:
+            execute_remember(command[1])
+        else:
     else:
         print("This makes no sense.")
 

@@ -2,7 +2,6 @@
 import os
 #Getch is used to get key presses (only works on windows, I will add code for other OS's shortly).
 from msvcrt import getch
-import keyboard
 #Max width and height settings, used to define the size command prompt window and for positioning of UI elements.
 maxwidth = 180
 maxheight = 50

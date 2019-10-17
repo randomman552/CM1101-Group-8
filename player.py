@@ -21,13 +21,12 @@ def Get_Player_Age():
         quit()
     
 player = {
-    "name": Get_Player_Name(),
-    "age": Get_Player_Age(),
     "description": {
 
     },
     "memory": {
-        
+        "name": Get_Player_Name(),
+        "age": Get_Player_Age()
     }
 }
 

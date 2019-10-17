@@ -143,12 +143,15 @@ def execute_inspect(item_id):
     else:
         print("That item does not exist.")
 
-def execute_remember(command):
+def execute_remember(command = ""):
     if command == "":
         for memory in player["memory"]:
-            print(memory)
+            print(memory + ": " + str(player["memory"][memory]))
     else:
-        print(player["memory"[command]])
+        try:
+            print(command + ": " + player["memory"][command])
+        except TypeError:
+            print("You can't remember that.")
 
 def execute_command(command):
     """This function takes a command (a list of words as returned by
@@ -188,6 +191,7 @@ def execute_command(command):
         if len(command) > 1:
             execute_remember(command[1])
         else:
+            execute_remember()
     else:
         print("This makes no sense.")
 

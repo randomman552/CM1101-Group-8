@@ -36,14 +36,14 @@ name is written in bold on the end.""",
     }
 
 item_family_picture = {
-    "id": "family picture"
+    "id": "picture",
 
-    "name": "a family picture"
+    "name": "a family picture",
 
-    "take": False
+    "take": False,
 
     "description":
-    "A family picture from your last birthday"
+    "A family picture from your last birthday",
 
     "inspection":
     """There is a number on the back of the frame. You can
@@ -95,9 +95,10 @@ but you won't see anything"""
 #Items must be put in this list to be usable.
 #Item should be put in like this: "example": item_example
 items = {
-    "medication": item_medication
-    "mirror": item_mirror
-    "knife": item_knife
-    "book": item_book
+    "medication": item_medication,
+    "mirror": item_mirror,
+    "picture": item_family_picture,
+    "knife": item_knife,
+    "book": item_book,
     "family picture": item_family_picture
     }

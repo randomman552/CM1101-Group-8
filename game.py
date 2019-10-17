@@ -1,10 +1,10 @@
 
 from map import rooms
-from player import *
 from items import *
 from gameparser import *
 import os
-os.system("mode con: cols=180 lines=50")
+import mainmenu
+from player import *
 
 
 def list_of_items(items):
@@ -30,6 +30,9 @@ def print_room_items(room):
     if not (items_in_room == ''):
         print("There is " + items_in_room + " here.")
         print("")
+    else:
+        print("There are no items in this room.")
+        print("")
 
 def print_inventory_items(items):
     """This function takes a list of inventory items and displays it nicely, in a
@@ -39,6 +42,9 @@ def print_inventory_items(items):
     items_in_inven = list_of_items(items)
     if not (items_in_inven == ''):
         print("You have " + items_in_inven + ".")
+        print("")
+    else:
+        print("You don't have any items.")
         print("")
 
 
@@ -84,8 +90,6 @@ def execute_go(direction):
         print("Moving to " + current_room["name"])
     else:
         print("You cannot go there.")
-    
-
 
 def execute_take(item_id):
     """This function takes an item_id as an argument and moves this item from the
@@ -110,17 +114,18 @@ def execute_take(item_id):
             print("You cannot take that.")
     else:
         print("That item does not exist.")
-        
-    
 
 def execute_drop(item_id):
     """This function takes an item_id as an argument and moves this item from the
     player's inventory to list of items in the current room. However, if there is
     no such item in the inventory, this function prints "You cannot drop that."
     """
+    #If item exists
     if item_id in items:
         item_id = items[item_id]
+        #If item in inventory
         if item_id in inventory:
+            #Remove the item from your inventory and then
             inventory.remove(item_id)
             current_room["items"].append(item_id)
             print("Dropped " + item_id["name"] + ".")
@@ -128,30 +133,73 @@ def execute_drop(item_id):
             print("You cannot drop that.")
     else:
         print("That item does not exist.")
-    
+
+def deep_inspect(item_id):
+    """This function provides further information about an item if certain items are present in the players inventory"""
+    #if item_magnifying_glass in inventory:
+        #print(item_id["inspection"])
+
 def execute_inspect(item_id):
     """This function takes an item_id as an argument, then prints the description of that item.
     If the item does not exist then it prints "That item does not exist".
     """
+    #If the item exists
     if item_id in items:
+        #Retrieve actual itme id from items list
         item_id = items[item_id]
-        if item_id in inventory:
+        #If item is in inventory or in the current room
+        if item_id in inventory or item_id in current_room["items"]:
+            #Print item description
             print(item_id["name"] + ":")
             print(item_id["description"])
+            #deep_inspect(item_id) Can be readded once items are fully finished
         else:
+            #Return error message
             print("You cannot inspect that.")
     else:
-        print("That item does not exist.")
+        #Return error message
+        print("You cannot inspect that.")
 
-def execute_remember(command = ""):
-    if command == "":
+def execute_remember(remembering = ""):
+    """Allows the player to recall things stored in their memory.
+    Takes a string for input, will check if an entry with the same string exists in memory,
+    if it does, then it will print what it stores.
+    """
+    #Check if remembering has a value.
+    if remembering == "":
+        #If remembering is empty, then print all items in memory.
         for memory in player["memory"]:
             print(memory + ": " + str(player["memory"][memory]))
     else:
+        #If remembering does have a value, then
         try:
-            print(command + ": " + player["memory"][command])
-        except TypeError:
-            print("You can't remember that.")
+            #Print value of that memory
+            print(remembering + ": " + player["memory"][remembering])
+        #If the memory does not exist, print an error
+        except KeyError:
+            print("You don't seem to remember anything like that.")
+
+def execute_use(item_id):
+    """Allows player to use an item, takes item_id as an argument"""
+    #Check if the item exists.
+    if item_id in items:
+        item_id = items[item_id]
+        #Check if its in the players inventory
+        if item_id in inventory:
+            #Check if it's usable
+            if "use" in item_id:
+                pass 
+                #Need code refering to effect of an item when used
+                #Does using an item remove it from the inventory?
+            else:
+                #Tell the player they can't use it
+                print("You cannot use that.")
+        else:
+            #Tell the player that it needs to be in their inventory
+            print("Item must be in your inventory to use.")
+    else:
+        #Tell the player they can't use it
+        print("You cannot use that.")
 
 def execute_command(command):
     """This function takes a command (a list of words as returned by
@@ -163,35 +211,43 @@ def execute_command(command):
 
     if 0 == len(command):
         return
-
+    #Go command section
     if command[0] == "go":
         if len(command) > 1:
             execute_go(command[1])
         else:
             print("Go where?")
-
+    #Take command section
     elif command[0] == "take":
         if len(command) > 1:
             execute_take(command[1])
         else:
             print("Take what?")
-
+    #Drop command section
     elif command[0] == "drop":
         if len(command) > 1:
             execute_drop(command[1])
         else:
             print("Drop what?")
-
+    #Inspect command section
     elif command[0] == "inspect":
         if len(command) > 1:
             execute_inspect(command[1])
         else:
             print("Inspect what?")
+    #Remember command section
     elif command[0] == "remember":
         if len(command) > 1:
             execute_remember(command[1])
         else:
             execute_remember()
+    #Use command section
+    elif command[0] == "use":
+        if len(command) > 1:
+            execute_use(command[1])
+        else:
+            print("Use what?")
+    #If none of the above commands are entered, print an error.
     else:
         print("This makes no sense.")
 

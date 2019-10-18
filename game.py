@@ -6,7 +6,7 @@ import os
 import mainmenu
 os.system("mode con: cols="+ str(mainmenu.maxwidth) + " lines="+ str(mainmenu.maxheight))
 from player import *
-
+import typingprint
 
 def list_of_items(items):
     """This function takes a list of items (see items.py for the definition) and

@@ -8,7 +8,7 @@ item_medication = {
     "take": True,
     #Description can be read with inspect command
     "description":
-    """A smal, white jar with your name on it. There
+    """A small, white jar with your name on it. There
 are pills inside. They look like Skittles""",
     #Inspection can be made with other items
     "inspection":

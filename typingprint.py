@@ -1,8 +1,8 @@
 import sys,time,random
 
-typing_speed = 70 #wpm
-def slow_type(t):
-    for l in t:
+typing_speed = 200 #wpm
+def slow_print(text):
+    for l in text:
         sys.stdout.write(l)
         sys.stdout.flush()
         time.sleep(random.random()*5.0/typing_speed)

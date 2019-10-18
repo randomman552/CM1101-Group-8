@@ -100,5 +100,6 @@ items = {
     "picture": item_family_picture,
     "knife": item_knife,
     "book": item_book,
-    "family picture": item_family_picture
+    "family picture": item_family_picture,
+    "window": item_window
     }

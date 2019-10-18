@@ -29,7 +29,6 @@ item_book = {
     "description":
     """An old book, covered in dust. Laying on the floor.""",
     
-    
     "inspection":
     """ A page is missing. You notice that on page 14 your
 name is written in bold on the end.""",

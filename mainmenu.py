@@ -2,9 +2,6 @@
 import os
 #Getch is used to get key presses (only works on windows, I will add code for other OS's shortly).
 from msvcrt import getch
-import pygame
-from pygame.locals import *
-pygame.init()
 #Max width and height settings, used to define the size command prompt window and for positioning of UI elements.
 maxwidth = 180
 maxheight = 50
@@ -72,13 +69,14 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
     os.system("mode con: cols="+ str(maxwidth) + " lines="+ str(maxheight))
     #String version of the game logo
     gamelogo = """
-     ::::::::      :::     ::::    ::::  :::::::::: 
-    :+:    :+:   :+: :+:   +:+:+: :+:+:+ :+:        
-    +:+         +:+   +:+  +:+ +:+:+ +:+ +:+        
-    :#:        +#++:++#++: +#+  +:+  +#+ +#++:++#   
-    +#+   +#+# +#+     +#+ +#+       +#+ +#+        
-    #+#    #+# #+#     #+# #+#       #+# #+#        
-     ########  ###     ### ###       ### ##########
+    :::::::::   ::::::::  :::   :::  ::::::::   ::::::::   ::::::::  :::::::::::  ::::::::   :::::::::  
+    :+:    :+: :+:    :+: :+:   :+: :+:    :+: :+:    :+: :+:    :+:     :+:     :+:    :+: :+:     :+: 
+    +:+    +:+ +:+         +:+ +:+  +:+        +:+    +:+ +:+            +:+     +:+               +:+  
+    +#++:++#+  +#++:++#++   +#++:   +#+        +#+    +:+ +#++:++#++     +#+     +#++:++#++       +#+   
+    +#+               +#+    +#+    +#+        +#+    +#+        +#+     +#+            +#+     +#+     
+    #+#        #+#    #+#    #+#    #+#    #+# #+#    #+# #+#    #+#     #+#     #+#    #+#             
+    ###         ########     ###     ########   ########   ########  ###########  ########      ###     
+
     """
     #Variable setup below
     #Split the logo into lines
@@ -106,4 +104,4 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
             current_selection = 0
         elif current_selection < 0:
             current_selection = maximum_selection
-    return current_selection
+    return options[current_selection]

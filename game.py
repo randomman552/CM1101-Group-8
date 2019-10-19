@@ -1,11 +1,18 @@
 
 from map import rooms
-from items import *
+from items import items
 from gameparser import *
 import os
 import mainmenu
+os.system("mode con: cols="+ str(mainmenu.maxwidth) + " lines="+ str(mainmenu.maxheight))
 from player import *
 import typingprint
+
+#type_print is a global variable that is used to define whether printing is instant or not.
+#for example, typingprint.slow_type("Hello", type_print) would print instantly if print_type was true, and type it if false.
+#this is used so that if the user has not changed room, the text is not typed out again.
+type_print = True
+
 
 def list_of_items(items):
     """This function takes a list of items (see items.py for the definition) and
@@ -19,33 +26,28 @@ def list_of_items(items):
             Output = Output + ", "
     return Output
 
-def print_room_items(room):
-    """This function takes a room as an input and nicely displays a list of items
-    found in this room (followed by a blank line). If there are no items in
-    the room, nothing is printed. See map.py for the definition of a room, and
-    items.py for the definition of an item. This function uses list_of_items()
-    to produce a comma-separated list of item names. For example:"""
+def return_room_items(room):
+    """This function takes a room as an input and nicely displays the items in the room in a string.
+    The string is then returned to be used elsewhere
+    """
 
     items_in_room = list_of_items(room["items"])
-    if not (items_in_room == ''):
-        print("There is " + items_in_room + " here.")
-        print("")
+    if not(items_in_room == ''):
+        return "There is " + items_in_room + " here."
     else:
-        print("There are no items in this room.")
-        print("")
+        return ""
 
-def print_inventory_items(items):
-    """This function takes a list of inventory items and displays it nicely, in a
-    manner similar to print_room_items(). The only difference is in formatting:
-    print "You have ..." instead of "There is ... here.". For example:"""
+def return_inventory_items(items):
+    """This function takes a list of inventory items and displays it nicely in a string.
+    It then returns this string to be used elsewhere.
+    """
 
     items_in_inven = list_of_items(items)
     if not (items_in_inven == ''):
-        print("You have " + items_in_inven + ".")
-        print("")
+        printstr = "You have " + items_in_inven + "."
     else:
-        print("You don't have any items.")
-        print("")
+        printstr = "You don't have any items."
+    return printstr
 
 
 def print_room(room):
@@ -55,11 +57,12 @@ def print_room(room):
     is printed in all capitals and framed by blank lines. Then follows the
     description of the room and a blank line again. If there are any items
     in the room, the list of items is printed next followed by a blank line
-    (use print_room_items() for this). For example:"""
+    (use print_room_items() for this)."""
 
     # Display room name
-    print("\n" + room["name"].upper() + "\n\n" + room["description"] + "\n")
-    print_room_items(room)
+    printstr = "\n" + room["name"].upper() + "\n" + room["description"]
+    typingprint.slow_print(printstr,type_print)
+    typingprint.slow_print(return_room_items(room),type_print)
 
 
 def is_valid_exit(exits, chosen_exit):
@@ -87,9 +90,9 @@ def execute_go(direction):
     global current_room
     if is_valid_exit(current_room["exits"],direction):
         current_room = move(current_room["exits"],direction)
-        print("Moving to " + current_room["name"])
+        typingprint.slow_print("Moving to " + current_room["name"])
     else:
-        print("You cannot go there.")
+        typingprint.slow_print("You cannot go there.")
 
 def execute_take(item_id):
     """This function takes an item_id as an argument and moves this item from the
@@ -97,23 +100,20 @@ def execute_take(item_id):
     there is no such item in the room, this function prints
     "You cannot take that."
     """
-    #Check if the player has enough space in their inventory to pick up the item.
-    #If they dont print an error and return.
-    inventory_mass = calc_inven_mass(inventory) + items[item_id]["weight"]
-    if inventory_mass > max_carry_weight:
-        print("You cannot carry any more.")
-        return 0
     #Check if the item exists
     if item_id in items:
         item_id = items[item_id]
-        if item_id in current_room["items"]:
-            inventory.append(item_id)
-            current_room["items"].remove(item_id)
-            print("Picked up " + item_id["name"] + ".")
+        if item_id["take"] == True:
+            if item_id in current_room["items"]:
+                inventory.append(item_id)
+                current_room["items"].remove(item_id)
+                typingprint.slow_print("Picked up " + item_id["name"] + ".")
+            else:
+                print("You cannot take that.")
         else:
             print("You cannot take that.")
     else:
-        print("That item does not exist.")
+        print("You cannot take that.")
 
 def execute_drop(item_id):
     """This function takes an item_id as an argument and moves this item from the
@@ -128,7 +128,7 @@ def execute_drop(item_id):
             #Remove the item from your inventory and then
             inventory.remove(item_id)
             current_room["items"].append(item_id)
-            print("Dropped " + item_id["name"] + ".")
+            typingprint.slow_print("Dropped " + item_id["name"] + ".")
         else:
             print("You cannot drop that.")
     else:
@@ -150,15 +150,15 @@ def execute_inspect(item_id):
         #If item is in inventory or in the current room
         if item_id in inventory or item_id in current_room["items"]:
             #Print item description
-            print(item_id["name"] + ":")
-            print(item_id["description"])
+            printstr = item_id["id"] + ":\n" + item_id["description"]
             #deep_inspect(item_id) Can be readded once items are fully finished
         else:
             #Return error message
-            print("You cannot inspect that.")
+            printstr = "You cannot inspect that."
     else:
         #Return error message
-        print("You cannot inspect that.")
+        printstr = "You cannot inspect that."
+    typingprint.slow_print(printstr, True)
 
 def execute_remember(remembering = ""):
     """Allows the player to recall things stored in their memory.
@@ -169,15 +169,15 @@ def execute_remember(remembering = ""):
     if remembering == "":
         #If remembering is empty, then print all items in memory.
         for memory in player["memory"]:
-            print(memory + ": " + str(player["memory"][memory]))
+            typingprint.slow_print(memory + ": " + str(player["memory"][memory]), True)
     else:
         #If remembering does have a value, then
         try:
             #Print value of that memory
-            print(remembering + ": " + player["memory"][remembering])
+            typingprint.slow_print(remembering + ": " + player["memory"][remembering], True)
         #If the memory does not exist, print an error
         except KeyError:
-            print("You don't seem to remember anything like that.")
+            typingprint.slow_print("You don't seem to remember anything like that.", True)
 
 def execute_use(item_id):
     """Allows player to use an item, takes item_id as an argument"""
@@ -185,21 +185,20 @@ def execute_use(item_id):
     if item_id in items:
         item_id = items[item_id]
         #Check if its in the players inventory
-        if item_id in inventory:
+        if (item_id in inventory) or (item_id in current_room["items"]):
             #Check if it's usable
             if "use" in item_id:
-                pass 
-                #Need code refering to effect of an item when used
-                #Does using an item remove it from the inventory?
+                printstr = item_id["id"] + ":\n" + item_id["use"]
             else:
                 #Tell the player they can't use it
-                print("You cannot use that.")
+                printstr = "You cannot use that."
         else:
-            #Tell the player that it needs to be in their inventory
-            print("Item must be in your inventory to use.")
+            #Tell the player they can't use it
+            printstr = "You cannot use that."
     else:
         #Tell the player they can't use it
-        print("You cannot use that.")
+        printstr = "You cannot use that."
+    typingprint.slow_print(printstr, True)
 
 def execute_command(command):
     """This function takes a command (a list of words as returned by
@@ -251,22 +250,53 @@ def execute_command(command):
     else:
         print("This makes no sense.")
 
+def print_item_unified():
+    pass
+
 def print_exit(direction, leads_to):
     """This function prints a line of a menu of exits. It takes a direction (the
     name of an exit) and the name of the room into which it leads (leads_to),
     and should print a menu line in the following format:"""
+    typingprint.slow_print("GO " + direction.upper() + " to " + leads_to + ".", type_print)
 
-    print("GO " + direction.upper() + " to " + leads_to + ".")
+def print_take_item(items):
+    """This function prints a menu of items which can be taken from the current room"""
+    printstr = ""
+    for item in items:
+        if item["take"] == True:
+            printstr += ", " + item["id"]
+    if not(printstr == ""):
+        printstr = "You can TAKE:\n" + printstr[2::]
+        typingprint.slow_print(printstr, type_print)
 
-def print_take_item(item):
-    """This function prints a line of a menu of items which can be taken"""
-    print("TAKE " + item["id"].upper() + " to take " + item["name"] + ".")
+def print_drop_item(items):
+    """This function prints a menu of items which can be dropped"""
+    printstr = ""
+    for item in items:
+            printstr += ", " + item["id"]
+    if not(printstr == ""):
+        printstr = "You can DROP:\n" + printstr[2::]
+        typingprint.slow_print(printstr, type_print)
 
-def print_drop_item(item):
-    """This function prints a line of a menu of items which can be dropped"""
-    print("DROP " + item["id"].upper() + " to drop " + item["name"] + ".")
+def print_use_item(items):
+    """This function prints a list of items which can be used"""
+    printstr = ""
+    for item in items:
+        if "use" in item:
+            printstr += ", " + item["id"]
+    if not(printstr == ""):
+        printstr = "You can USE:\n" + printstr[2::]
+        typingprint.slow_print(printstr, type_print)
 
-
+def print_inspect_item(items):
+    """Prints list of items which can be inspected"""
+    printstr = ""
+    for item in items:
+        if ("description" in item) or ("inspection" in item):
+            printstr += ", " + item["id"]
+    if not(printstr == ""):
+        printstr = "You can INSPECT:\n" + printstr[2::]
+        typingprint.slow_print(printstr, type_print)
 
 def exit_leads_to(exits, direction):
     """This function takes a dictionary of exits and a direction (a particular
@@ -285,20 +315,21 @@ def print_menu(exits, room_items, inv_items):
     using the function exit_leads_to(). Then, it should print a list of commands
     related to items:"""
 
-    print("You can:")
+    typingprint.slow_print("You can:", type_print)
     # Iterate over available exits.
     for direction in exits:
         # Print the exit name and where it leads to.
         print_exit(direction, exit_leads_to(exits, direction))
     #Print the items which you can take.
-    for item in current_room["items"]:
-        print_take_item(item)
-    #Print the items which you can drop
-    for item in inventory:
-        print_drop_item(item)
-        
+    print_take_item(room_items)
+    #Print the items which you can drop.
+    print_drop_item(inventory)
+    #Print the items which you can use.
+    print_use_item(inventory + room_items)
+    #Print the items which you can inspect
+    print_inspect_item(inventory + room_items)
     
-    print("What do you want to do?")
+    typingprint.slow_print("What do you want to do?", type_print)
 
 def menu(exits, room_items, inv_items):
     """This function, given a dictionary of possible exits from a room, and a list
@@ -325,7 +356,6 @@ def move(exits, direction):
     """This function returns the room into which the player will move if, from a
     dictionary "exits" of avaiable exits, they choose to move towards the exit
     with the name given by "direction". For example:"""
-
     # Next room to go to
     return rooms[exits[direction]]
 
@@ -342,10 +372,17 @@ def main():
     # Main game loop
     win = False
     while win == False:
+        global previous_room
+        global type_print
         os.system("cls")
+
+        #Update type_print
+        type_print = not bool(previous_room == current_room)
+
         # Display game status (room description, inventory etc.)
         print_room(current_room)
-        print_inventory_items(inventory)
+        previous_room = current_room
+        typingprint.slow_print(return_inventory_items(inventory),type_print)
 
         # Show the menu with possible actions and ask the player
         command = menu(current_room["exits"], current_room["items"], inventory)
@@ -355,6 +392,7 @@ def main():
 
         #Check win conditions
         win = check_win_conditions()
+
         os.system("pause")
     os.system("cls")
     print("""

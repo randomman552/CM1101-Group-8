@@ -43,3 +43,4 @@ inventory = []
 
 # Start game in the bedroom
 current_room = rooms["Bedroom"]
+previous_room = rooms["Lounge"]

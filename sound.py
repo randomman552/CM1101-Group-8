@@ -1,9 +1,16 @@
-import pygame
-pygame.mixer.pre_init(44100, 16, 2, 4096)
-pygame.mixer.init()
-exit_sound = pygame.mixer.Sound(file="Sounds\exit_sound.wav")
+from pygame import mixer
+mixer.pre_init(44100, 16, 2, 4096)
+mixer.init()
+exit_sound = mixer.Sound(file="Sounds\exit_sound.wav")
+mixer.music.load("Sounds\BG_Music.wav")
 
-exit_sound.play()
+def play_exit_sound():
+    if not mixer.get_busy():
+        exit_sound.play()
 
-while True:
-    pass
+def BG_Music(play = True):
+    if play:
+        if not mixer.music.get_busy():
+            mixer.music.play(-1)
+    else:
+        mixer.music.stop()

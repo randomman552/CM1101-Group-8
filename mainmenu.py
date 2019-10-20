@@ -103,9 +103,9 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
             current_selection = 0
         elif current_selection < 0:
             current_selection = maximum_selection
-        #Runs at 20 frames a second, except when moving selection
-        time.sleep(0.1)
-    #This is a stupid way of clearing the users input. Otherwise it would come up with all of the keys they pressed while in the menu after exiting it.
+        #Runs at 13.333 frames a second
+        time.sleep(0.075)
+    #This is a way of clearing the users input. Otherwise it would come up with all of the keys they pressed while in the menu after exiting it.
     keyboard.press_and_release('enter')
     input()
     os.system("cls")

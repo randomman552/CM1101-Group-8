@@ -1,7 +1,9 @@
 #OS is used to interact with the command prompt window.
 import os
-#Getch is used to get key presses (only works on windows, I will add code for other OS's shortly).
-from msvcrt import getch
+#Keyboard is used to check keypresses.
+import keyboard
+#Time is used to prevent the keys from being detected constantly, makes menu usable.
+import time
 #Max width and height settings, used to define the size command prompt window and for positioning of UI elements.
 maxwidth = 180
 maxheight = 50
@@ -43,21 +45,13 @@ def update_display(logo,selection,options):
             print((" " * spacing) + line)
 
 def key_press():
-    #while True:
-        #keys = pygame.key.get_pressed()
-        #if keys[K_s]:
-            #return "s"
-        #elif keys[K_w]:
-            #return "w"
-        #elif keys[K_SPACE]:
-            #return " "
-    key = ord(getch())
-    if key == 119:
-        return "w"
-    elif key == 115:
-        return "s"
-    if key == 32:
-        return " "
+    while True:
+        if keyboard.is_pressed("w"):
+            return "w"
+        elif keyboard.is_pressed("s"):
+            return "s"
+        elif keyboard.is_pressed(" "):
+            return " "
 
 def menu(options = ["New game ", "Load game", "Quit     "]):
     """Handles the main menu.
@@ -88,7 +82,6 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
         os.system("cls")
         update_display(gamelogo,current_selection,options)
         keypressed = key_press()
-        print(keypressed)
         if (keypressed == "s"):
             #If s pressed
             current_selection += 1
@@ -104,4 +97,5 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
             current_selection = 0
         elif current_selection < 0:
             current_selection = maximum_selection
+        time.sleep(0.1)
     return options[current_selection]

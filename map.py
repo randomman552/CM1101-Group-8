@@ -33,7 +33,7 @@ room_hallway = {
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"east": "Bedroom", "west": "Lounge", "north": "Kitchen", "south": "Outside"},
     #Items contains a list of the items available in the room on game start.
-    "items": []
+    "items": [item_coat]
 }
 
 room_living_room = {

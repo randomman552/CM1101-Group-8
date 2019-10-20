@@ -19,9 +19,10 @@ def Get_Player_Age():
         print("Thats not a number!")
         os.system("pause")
         quit()
-    
-player = {
+player = {}
+playerdefault = {
     "stage": 0,
+    "psycosis meter": 0,
     "description": {
 
     },

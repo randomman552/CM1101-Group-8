@@ -194,7 +194,13 @@ def execute_use(item_id):
         if (item_id in inventory) or (item_id in current_room["items"]):
             #Check if it's usable
             if "use" in item_id:
+                #Need to add check for item requirements - Urgent
+                #Print the use text
                 printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
+                #Apply the effect of the item on the stage
+                player["stage"] += item_id["use"]["stage effect"]
+                #Apply the effect of the item on the psycosis meter
+                player["psycosis meter"] += item_id["use"]["psycosis effect"]
                 if item_id["use"]["remove after use"]:
                     if item_id in inventory:
                         inventory.remove(item_id)

@@ -59,7 +59,7 @@ def key_press():
 
 def random_colour_change():
     #Generates a random colour code for using with ansi escape codes to change colour
-    return ["\x1b[" + str(random.randint(0,8)) + ";" + str(random.randint(30,38)) + ";" + str(random.randint(40,48)) + "m","\x1b[0m"]
+    return ["\x1b[" + str(random.randint(0,4)) + ";" + str(random.randint(30,38)) + ";" + str(40) + "m","\x1b[0m"]
 
 def menu(options = ["New game ", "Load game", "Quit     "]):
     """Handles the main menu.
@@ -91,11 +91,9 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
         if (keypressed == "s"):
             #If s pressed
             current_selection += 1
-            time.sleep(0.1)
         elif (keypressed == "w"):
             #If w pressed
             current_selection -= 1
-            time.sleep(0.1)
         elif (keypressed == " "):
             #If enter or space is pressed, the loop is broken.
             break
@@ -105,8 +103,8 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
             current_selection = 0
         elif current_selection < 0:
             current_selection = maximum_selection
-        #Runs at 40 frames a second, except when moving selection
-        time.sleep(0.025)
+        #Runs at 20 frames a second, except when moving selection
+        time.sleep(0.1)
     #This is a stupid way of clearing the users input. Otherwise it would come up with all of the keys they pressed while in the menu after exiting it.
     keyboard.press_and_release('enter')
     input()

@@ -21,12 +21,13 @@ def Get_Player_Age():
         quit()
     
 player = {
+    "stage": 0,
     "description": {
 
     },
     "memory": {
-        "name": Get_Player_Name(),
-        "age": Get_Player_Age(),
+        "name": "Bob",
+        "age": "3000",
         "password": [] #Placeholder, for use in password puzzle?
     }
 }
@@ -43,4 +44,4 @@ inventory = []
 
 # Start game in the bedroom
 current_room = rooms["Bedroom"]
-previous_room = rooms["Lounge"]
+previous_room = ""

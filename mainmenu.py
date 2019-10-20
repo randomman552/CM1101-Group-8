@@ -43,7 +43,21 @@ def update_display(logo,selection,options):
             print((" " * spacing) + line)
 
 def key_press():
-    return ord(getch())
+    #while True:
+        #keys = pygame.key.get_pressed()
+        #if keys[K_s]:
+            #return "s"
+        #elif keys[K_w]:
+            #return "w"
+        #elif keys[K_SPACE]:
+            #return " "
+    key = ord(getch())
+    if key == 119:
+        return "w"
+    elif key == 115:
+        return "s"
+    if key == 32:
+        return " "
 
 def menu(options = ["New game ", "Load game", "Quit     "]):
     """Handles the main menu.
@@ -55,13 +69,14 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
     os.system("mode con: cols="+ str(maxwidth) + " lines="+ str(maxheight))
     #String version of the game logo
     gamelogo = """
-     ::::::::      :::     ::::    ::::  :::::::::: 
-    :+:    :+:   :+: :+:   +:+:+: :+:+:+ :+:        
-    +:+         +:+   +:+  +:+ +:+:+ +:+ +:+        
-    :#:        +#++:++#++: +#+  +:+  +#+ +#++:++#   
-    +#+   +#+# +#+     +#+ +#+       +#+ +#+        
-    #+#    #+# #+#     #+# #+#       #+# #+#        
-     ########  ###     ### ###       ### ##########
+    :::::::::   ::::::::  :::   :::  ::::::::   ::::::::   ::::::::  :::::::::::  ::::::::   :::::::::  
+    :+:    :+: :+:    :+: :+:   :+: :+:    :+: :+:    :+: :+:    :+:     :+:     :+:    :+: :+:     :+: 
+    +:+    +:+ +:+         +:+ +:+  +:+        +:+    +:+ +:+            +:+     +:+               +:+  
+    +#++:++#+  +#++:++#++   +#++:   +#+        +#+    +:+ +#++:++#++     +#+     +#++:++#++       +#+   
+    +#+               +#+    +#+    +#+        +#+    +#+        +#+     +#+            +#+     +#+     
+    #+#        #+#    #+#    #+#    #+#    #+# #+#    #+# #+#    #+#     #+#     #+#    #+#             
+    ###         ########     ###     ########   ########   ########  ###########  ########      ###     
+
     """
     #Variable setup below
     #Split the logo into lines
@@ -74,12 +89,13 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
         update_display(gamelogo,current_selection,options)
         keypressed = key_press()
         print(keypressed)
-        if (keypressed == 80) or (keypressed == 115):
-            #If down arrow key or s is pressed,
+        if (keypressed == "s"):
+            #If s pressed
             current_selection += 1
-        elif (keypressed == 72) or (keypressed == 119):
+        elif (keypressed == "w"):
+            #If w pressed
             current_selection -= 1
-        elif (keypressed == 13) or (keypressed == 32):
+        elif (keypressed == " "):
             #If enter or space is pressed, the loop is broken.
             break
         #Check if current_selection is within its bounds.
@@ -88,4 +104,4 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
             current_selection = 0
         elif current_selection < 0:
             current_selection = maximum_selection
-    return current_selection
+    return options[current_selection]

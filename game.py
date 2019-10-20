@@ -1,18 +1,32 @@
-
 from map import rooms
 from items import items
 from gameparser import *
 import os
 import mainmenu
+import sound
 os.system("mode con: cols="+ str(mainmenu.maxwidth) + " lines="+ str(mainmenu.maxheight))
 from player import *
 import typingprint
+import pygame
+
+#Initialise pygame and and its mixer in the main thread.
+pygame.init()
+pygame.mixer.init()
+#Start background music, can be stopped at any point by calling BG_Music(False)
+sound.BG_Music()
+
+option = mainmenu.menu(["New game ", "Load game", "Quit     "])
+if option.strip() == "Quit":
+    quit()
+elif option.strip() == "Load game":
+    pass #Load game code here
+elif option.strip() == "New game ":
+    pass #Start new game code here
 
 #type_print is a global variable that is used to define whether printing is instant or not.
 #for example, typingprint.slow_type("Hello", type_print) would print instantly if print_type was true, and type it if false.
 #this is used so that if the user has not changed room, the text is not typed out again.
 type_print = True
-
 
 def list_of_items(items):
     """This function takes a list of items (see items.py for the definition) and
@@ -356,7 +370,8 @@ def move(exits, direction):
     """This function returns the room into which the player will move if, from a
     dictionary "exits" of avaiable exits, they choose to move towards the exit
     with the name given by "direction". For example:"""
-    # Next room to go to
+    # Next room to go to=
+    sound.play_exit_sound()
     return rooms[exits[direction]]
 
 def check_win_conditions():

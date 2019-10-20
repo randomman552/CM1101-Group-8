@@ -194,7 +194,12 @@ def execute_use(item_id):
         if (item_id in inventory) or (item_id in current_room["items"]):
             #Check if it's usable
             if "use" in item_id:
-                printstr = item_id["id"] + ":\n" + item_id["use"]
+                printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
+                if item_id["use"]["remove after use"]:
+                    if item_id in inventory:
+                        inventory.remove(item_id)
+                    elif item_id in current_room["items"]:
+                        current_room["items"].remove(item_id)
             else:
                 #Tell the player they can't use it
                 printstr = "You cannot use that."
@@ -373,6 +378,15 @@ def check_win_conditions():
     #Need to add code to read definitions of win conditions
     Output = False
     return Output
+def reset_game():
+    global current_room
+    global previous_room
+    global player
+    global inventory
+    current_room = rooms["Bedroom"]
+    previous_room = ""
+    player = playerdefault
+    inventory = []
 
 # This is the entry point of our program
 def main():
@@ -382,10 +396,10 @@ def main():
         if option.strip() == "Quit":
             quit()
         elif option.strip() == "Load game":
-            mainmenu.menu(["Save 1", "Save 2", "Save 3"])
+            mainmenu.menu(["SAVES LIST HERE"])
             #Need loading code before implementation.
-        elif option.strip() == "New game ":
-            pass #Start new game code here.
+        elif option.strip() == "New game":
+            reset_game()
         # Main game loop
         win = False
         while win == False:
@@ -412,7 +426,7 @@ def main():
                     break #Breaks out of the loop, and starts the main menu again
                 elif command[0] == "load":
                     pass #Call load function
-                elif command[0] == save:
+                elif command[0] == "save":
                     pass #Call save function
             else:
                 #If the command is meant to be carried out within the game.

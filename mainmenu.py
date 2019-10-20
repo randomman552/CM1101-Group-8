@@ -4,6 +4,8 @@ import os
 import keyboard
 #Time is used to prevent the keys from being detected constantly, makes menu usable.
 import time
+#Random is used for randomly changing colours.
+import random
 #Max width and height settings, used to define the size command prompt window and for positioning of UI elements.
 maxwidth = 180
 maxheight = 50
@@ -15,10 +17,12 @@ def calc_logo_size(logo_as_lines):
     logo_height = len(logo_as_lines)
     return [logo_width,logo_height]
 
-def update_display(logo,selection,options):
+def update_display(logo, selection, options):
     """This function updates the display for the main menu.
     It does this by clearing the screen and then reprinting the options in the correct configuration.
     """
+    #Generate random colours for logo
+    colours = random_colour_change()
     #Print spacing area
     print("\n\n\n\n")
 
@@ -28,11 +32,10 @@ def update_display(logo,selection,options):
     logo_spacing = int((maxwidth - logo_size[0]) / 2)
     #Print the logo line by line
     for line in logo:
-        print((" " * logo_spacing) + line)
+        print((" " * logo_spacing) + colours[0] + line + colours[1])
     
     #Print spacing area
     print("\n\n\n\n")
-
     #Print menu
     for line in options:
         #Spacing is used to position the options centrally
@@ -45,13 +48,18 @@ def update_display(logo,selection,options):
             print((" " * spacing) + line)
 
 def key_press():
-    while True:
-        if keyboard.is_pressed("w"):
-            return "w"
-        elif keyboard.is_pressed("s"):
-            return "s"
-        elif keyboard.is_pressed(" "):
-            return " "
+    if keyboard.is_pressed("w"):
+        return "w"
+    elif keyboard.is_pressed("s"):
+        return "s"
+    elif keyboard.is_pressed(" "):
+        return " "
+    else:
+        return None
+
+def random_colour_change():
+    #Generates a random colour code for using with ansi escape codes to change colour
+    return ["\x1b[" + str(random.randint(0,8)) + ";" + str(random.randint(30,38)) + ";" + str(random.randint(40,48)) + "m","\x1b[0m"]
 
 def menu(options = ["New game ", "Load game", "Quit     "]):
     """Handles the main menu.
@@ -69,9 +77,7 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
     +#++:++#+  +#++:++#++   +#++:   +#+        +#+    +:+ +#++:++#++     +#+     +#++:++#++       +#+   
     +#+               +#+    +#+    +#+        +#+    +#+        +#+     +#+            +#+     +#+     
     #+#        #+#    #+#    #+#    #+#    #+# #+#    #+# #+#    #+#     #+#     #+#    #+#             
-    ###         ########     ###     ########   ########   ########  ###########  ########      ###     
-
-    """
+    ###         ########     ###     ########   ########   ########  ###########  ########      ###     """
     #Variable setup below
     #Split the logo into lines
     gamelogo = gamelogo.splitlines()
@@ -82,15 +88,14 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
         os.system("cls")
         update_display(gamelogo,current_selection,options)
         keypressed = key_press()
-        #Delay defines the refresh rate, also prevents massive number of keypresses per cycle.
-        #Current framerate is 10 FPS, which it thought was reasonable for this.
-        time.sleep(0.1)
         if (keypressed == "s"):
             #If s pressed
             current_selection += 1
+            time.sleep(0.1)
         elif (keypressed == "w"):
             #If w pressed
             current_selection -= 1
+            time.sleep(0.1)
         elif (keypressed == " "):
             #If enter or space is pressed, the loop is broken.
             break
@@ -100,6 +105,8 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
             current_selection = 0
         elif current_selection < 0:
             current_selection = maximum_selection
+        #Runs at 40 frames a second, except when moving selection
+        time.sleep(0.025)
     #This is a stupid way of clearing the users input. Otherwise it would come up with all of the keys they pressed while in the menu after exiting it.
     keyboard.press_and_release('enter')
     input()

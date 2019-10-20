@@ -82,6 +82,9 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
         os.system("cls")
         update_display(gamelogo,current_selection,options)
         keypressed = key_press()
+        #Delay defines the refresh rate, also prevents massive number of keypresses per cycle.
+        #Current framerate is 10 FPS, which it thought was reasonable for this.
+        time.sleep(0.1)
         if (keypressed == "s"):
             #If s pressed
             current_selection += 1
@@ -97,5 +100,8 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
             current_selection = 0
         elif current_selection < 0:
             current_selection = maximum_selection
-        time.sleep(0.1)
+    #This is a stupid way of clearing the users input. Otherwise it would come up with all of the keys they pressed while in the menu after exiting it.
+    keyboard.press_and_release('enter')
+    input()
+    os.system("cls")
     return options[current_selection]

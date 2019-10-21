@@ -17,14 +17,14 @@ def calc_logo_size(logo_as_lines):
     logo_height = len(logo_as_lines)
     return [logo_width,logo_height]
 
-def update_display(logo, selection, options):
+def update_display(logo, selection, options, footer, vertical_padding = 4):
     """This function updates the display for the main menu.
     It does this by clearing the screen and then reprinting the options in the correct configuration.
     """
     #Generate random colours for logo
     colours = random_colour_change()
     #Print spacing area
-    print("\n\n\n\n")
+    print("\n" * vertical_padding)
 
     #Calculate the size of the logo
     logo_size = calc_logo_size(logo)
@@ -35,7 +35,7 @@ def update_display(logo, selection, options):
         print((" " * logo_spacing) + colours[0] + line + colours[1])
     
     #Print spacing area
-    print("\n\n\n\n")
+    print("\n" * vertical_padding)
     #Print menu
     for line in options:
         #Spacing is used to position the options centrally
@@ -46,6 +46,10 @@ def update_display(logo, selection, options):
             print ((" " * (spacing - 1)) + ">" + line)
         else:
             print((" " * spacing) + line)
+    #Print footer
+    lines_taken_up = (vertical_padding * 2 + len(logo) + len(options) + 2)
+    print("\n" * (maxheight - lines_taken_up - 1))
+    print(footer)
 
 def key_press():
     if keyboard.is_pressed("w"):
@@ -65,7 +69,7 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
     """Handles the main menu.
     When an option is selected and space or enter are pressed, 
     a number corresponding to the selected option is returned.
-    Options can be configured by changing the
+    Options can be configured by changing the options argument.
     """
     #Defines size of window
     os.system("mode con: cols="+ str(maxwidth) + " lines="+ str(maxheight))
@@ -86,7 +90,7 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
     while True:
         #Main display loop
         os.system("cls")
-        update_display(gamelogo,current_selection,options)
+        update_display(gamelogo, current_selection, options, "(C) No rights reserved. Using Pygame and Keyboard librarys.")
         keypressed = key_press()
         if (keypressed == "s"):
             #If s pressed

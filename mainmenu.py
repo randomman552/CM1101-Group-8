@@ -24,7 +24,7 @@ def update_display(logo, selection, options, footer, vertical_padding = 4):
     #Generate random colours for logo
     colours = random_colour_change()
     #Print spacing area
-    print("\n" * vertical_padding)
+    print("\n" * int(vertical_padding))
 
     #Calculate the size of the logo
     logo_size = calc_logo_size(logo)
@@ -35,7 +35,7 @@ def update_display(logo, selection, options, footer, vertical_padding = 4):
         print((" " * logo_spacing) + colours[0] + line + colours[1])
     
     #Print spacing area
-    print("\n" * vertical_padding)
+    print("\n" * int(vertical_padding))
     #Print menu
     for line in options:
         #Spacing is used to position the options centrally
@@ -48,7 +48,7 @@ def update_display(logo, selection, options, footer, vertical_padding = 4):
             print((" " * spacing) + line)
     #Print footer
     lines_taken_up = (vertical_padding * 2 + len(logo) + len(options) + 2)
-    print("\n" * (maxheight - lines_taken_up - 1))
+    print("\n" * int(maxheight - lines_taken_up - 1))
     print(footer)
 
 def key_press():
@@ -114,3 +114,37 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
     input()
     os.system("cls")
     return options[current_selection]
+
+def endscreen(mode):
+    #Define size of window
+    os.system("mode con: cols="+ str(maxwidth) + " lines="+ str(maxheight))
+    #Win and lose ascci art as strings
+    win_string = """
+:::       ::: ::::::::::: ::::    :::
+:+:       :+:     :+:     :+:+:   :+:
++:+       +:+     +:+     :+:+:+  +:+
++#+  +:+  +#+     +#+     +#+ +:+ +#+
++#+ +#+#+ +#+     +#+     +#+  +#+#+#
+ #+#+# #+#+#      #+#     #+#   #+#+#
+  ###   ###   ########### ###    ####"""
+    lose_string = """
+:::         ::::::::   ::::::::  ::::::::::
+:+:        :+:    :+: :+:    :+: :+:       
++:+        +:+    +:+ +:+        +:+       
++#+        +#+    +:+ +#++:++#++ +#++:++#  
++#+        +#+    +#+        +#+ +#+       
+#+#        #+#    #+# #+#    #+# #+#       
+##########  ########   ########  ##########"""
+    #Split both ascii art's into lines
+    win = win_string.splitlines()
+    lose = lose_string.splitlines()
+    while True:
+        os.system("cls")
+        keypressed = key_press()
+        if keypressed == " ":
+            break
+        if mode == "win":
+            update_display(win, 0, [], "",(maxheight - calc_logo_size(win)[1]) / 2)
+        elif mode == "lose":
+            update_display(lose, 0, [], "",(maxheight - calc_logo_size(lose)[1]) / 2)
+        time.sleep(0.075)

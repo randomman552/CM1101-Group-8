@@ -78,8 +78,8 @@ def print_room(room):
     in the room, the list of items is printed next followed by a blank line
     (use print_room_items() for this)."""
 
-    #Display room name
-    printstr = "\n"+ ANSIstyles.BOLD + room["name"].upper() + ANSIstyles.END + "\n\n" + room["description"] + "."
+    #Display room name in BOLD, then print description
+    printstr = "\n"+ ANSIstyles.BOLD + room["name"].upper() + ANSIstyles.END + "\n\n" + room["description"] + ".\n"
     typingprint.slow_print(printstr,type_print)
     #Print items in room
     typingprint.slow_print(return_room_items(room),type_print)
@@ -110,9 +110,10 @@ def execute_go(direction):
     global current_room
     if is_valid_exit(current_room["exits"],direction):
         current_room = move(current_room["exits"],direction)
-        typingprint.slow_print("Moving to " + current_room["name"])
+        printstr = "Moving to " + current_room["name"]
     else:
-        typingprint.slow_print("You cannot go there.")
+        printstr = ANSIstyles.RED + "You cannot go there." + ANSIstyles.END
+    return printstr
 
 def execute_take(item_id):
     """This function takes an item_id as an argument and moves this item from the
@@ -239,7 +240,7 @@ def execute_command(command):
     #Go command section
     if command[0] == "go":
         if len(command) > 1:
-            execute_go(command[1])
+            printstr = execute_go(command[1])
         else:
             printstr =  ANSIstyles.RED + "Go where?" + ANSIstyles.END
     #Take command section
@@ -273,17 +274,20 @@ def execute_command(command):
         else:
             printstr =  ANSIstyles.RED + "Use what?" + ANSIstyles.END
     else:
+        #If the command is invalid, change the printstr to reflect so
         printstr = ANSIstyles.RED + "Invalid command!" + ANSIstyles.END
     typingprint.slow_print(printstr, True)
 
-def print_item_unified():
-    pass
+def return_exit(direction, leads_to):
+    """This function returns a line to print_exits, these are then printed out in the standard menu format:"""
+    return direction.upper() + " : " + leads_to + ".\n"
 
-def print_exit(direction, leads_to):
-    """This function prints a line of a menu of exits. It takes a direction (the
-    name of an exit) and the name of the room into which it leads (leads_to),
-    and should print a menu line in the following format:"""
-    typingprint.slow_print("GO " + direction.upper() + " to " + leads_to + ".", type_print)
+def print_exits(exits):
+    if len(exits) > 1:
+        printstr = "You can GO:\n"
+        for direction in exits:
+            printstr = printstr + return_exit(direction,exit_leads_to(exits, direction))
+        typingprint.slow_print(printstr, type_print)
 
 def print_take_item(items):
     """This function prints a menu of items which can be taken from the current room"""
@@ -292,7 +296,7 @@ def print_take_item(items):
         if item["take"] == True:
             printstr += ", " + item["id"]
     if not(printstr == ""):
-        printstr = "You can TAKE:\n" + printstr[2::]
+        printstr = "You can TAKE:\n" + printstr[2::] + ".\n"
         typingprint.slow_print(printstr, type_print)
 
 def print_drop_item(items):
@@ -301,7 +305,7 @@ def print_drop_item(items):
     for item in items:
             printstr += ", " + item["id"]
     if not(printstr == ""):
-        printstr = "You can DROP:\n" + printstr[2::]
+        printstr = "You can DROP:\n" + printstr[2::] + ".\n"
         typingprint.slow_print(printstr, type_print)
 
 def print_use_item(items):
@@ -311,7 +315,7 @@ def print_use_item(items):
         if "use" in item:
             printstr += ", " + item["id"]
     if not(printstr == ""):
-        printstr = "You can USE:\n" + printstr[2::]
+        printstr = "You can USE:\n" + printstr[2::] + ".\n"
         typingprint.slow_print(printstr, type_print)
 
 def print_inspect_item(items):
@@ -321,7 +325,7 @@ def print_inspect_item(items):
         if ("description" in item) or ("inspection" in item):
             printstr += ", " + item["id"]
     if not(printstr == ""):
-        printstr = "You can INSPECT:\n" + printstr[2::]
+        printstr = "You can INSPECT:\n" + printstr[2::] + ".\n"
         typingprint.slow_print(printstr, type_print)
 
 def exit_leads_to(exits, direction):
@@ -340,12 +344,9 @@ def print_menu(exits, room_items, inv_items):
     the appropriate format. The room into which an exit leads is obtained
     using the function exit_leads_to(). Then, it should print a list of commands
     related to items:"""
-
-    typingprint.slow_print("You can:", type_print)
-    # Iterate over available exits.
-    for direction in exits:
-        # Print the exit name and where it leads to.
-        print_exit(direction, exit_leads_to(exits, direction))
+    
+    #Print exits
+    print_exits(exits)
     #Print the items which you can take.
     print_take_item(room_items)
     #Print the items which you can drop.
@@ -402,6 +403,11 @@ def reset_game():
     previous_room = ""
     player = playerdefault
     inventory = []
+    for room in rooms:
+        try:
+            rooms[room]["items"] = rooms[room]["items default"]
+        except KeyError:
+            pass
 
 # This is the entry point of our program
 def main():

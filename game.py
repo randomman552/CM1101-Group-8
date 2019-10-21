@@ -26,12 +26,19 @@ def generate_GETs(items):
     """This function goes through all items inputted into it, 
     and finds what event triggers are present in all of them.
     These are then added to the GETs dict"""
+    #Set output to an empty dict to start
     output = {}
+    #For each item in the game
     for item in items:
+        #Switch string for actual itme dict
         item = items[item]
+        #If item is usable
         if "use" in item:
+            #If it has conditions
             if "conditions" in item["use"]:
+                #For each condition
                 for condition in item["use"]["conditions"]:
+                    #Add the condition to the output, ignore any that have already been added
                     if not condition in output:
                         output.update({condition: False})
     return output
@@ -319,7 +326,7 @@ def return_exit(direction, leads_to):
     return direction.upper() + " : " + leads_to + ".\n"
 
 def print_exits(exits):
-    if len(exits) > 1:
+    if len(exits) > 0:
         printstr = "You can " + ANSIstyles.YELLOW +  "GO:\n" + ANSIstyles.END
         for direction in exits:
             printstr = printstr + return_exit(direction,exit_leads_to(exits, direction))
@@ -429,6 +436,7 @@ def reset_game():
     global player
     global inventory
     global rooms
+    global GETs
     #Reset location
     current_room = rooms["Bedroom"]
     previous_room = ""
@@ -439,11 +447,14 @@ def reset_game():
     #This is done like this rather than assigning the default items value to items to prevent the editing of the default values.
     #This allows for the restarting of the game without restarting the whole program.
     for room in rooms:
-        #Clear all items from each room
+        #Clear all items from each room.
         rooms[room]["items"] = []
-        #Add each item to that room
+        #Add each item to that room.
         for item in rooms[room]["items default"]:
             rooms[room]["items"].append(item)
+    #Regenerate GETs with default values.
+    GETs = {}
+    GETs = generate_GETs(items)
 
 def check_win_conditions():
     """This function checks whether win conditions have been met.
@@ -473,17 +484,7 @@ def main():
             os.system("cls")
             if player["stage"] == 0:
                 #Set values for first stage, then increment stage by 1 to enter it.
-                global current_room
                 player["stage"] += 1
-            elif player["stage"] == 2:
-                #Set values for second stage, then increment stage by 1 to enter it.
-                player["stage"] += 1
-            elif player["stage"] == 4:
-                #Set values for third stage, then increment stage by 1 to enter it.
-                player["stage"] += 1
-            elif player["stage"] >= 6:
-                #All stages complete, set win to true and exit the game.
-                win = True
             else:
                 global previous_room
                 global type_print

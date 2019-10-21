@@ -9,7 +9,8 @@ room_bedroom = {
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"north": "Bathroom", "west": "Hallway"},
     #Items contains a list of the items available in the room on game start.
-    "items": [item_mirror,item_window]
+    "items": [],
+    "items default": [item_mirror,item_window]
 }
 
 room_bathroom = {
@@ -21,7 +22,8 @@ room_bathroom = {
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"south": "Bedroom"},
     #Items contains a list of the items available in the room on game start.
-    "items": [item_medication,item_window]
+    "items": [],
+    "items default": [item_medication,item_window]
 }
 
 room_hallway = {
@@ -33,7 +35,8 @@ room_hallway = {
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"east": "Bedroom", "west": "Lounge", "north": "Kitchen", "south": "Outside"},
     #Items contains a list of the items available in the room on game start.
-    "items": [item_coat]
+    "items": [],
+    "items default": [item_coat]
 }
 
 room_living_room = {
@@ -45,7 +48,8 @@ room_living_room = {
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"east": "Hallway", "north": "Office"},
     #Items contains a list of the items available in the room on game start.
-    "items": [item_family_picture,item_window]
+    "items": [],
+    "items default": [item_family_picture,item_window]
 }
 
 room_office = {
@@ -57,7 +61,8 @@ room_office = {
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"south": "Lounge"},
     #Items contains a list of the items available in the room on game start.
-    "items": [item_book,item_window]
+    "items": [],
+    "items default": [item_book,item_window]
 }
 
 room_kitchen = {
@@ -69,7 +74,8 @@ room_kitchen = {
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"south": "Hallway"},
     #Items contains a list of the items available in the room on game start.
-    "items": [item_knife,item_window]
+    "items": [],
+    "items default": [item_knife,item_window]
 }
 
 room_outside = {

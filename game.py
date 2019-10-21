@@ -20,6 +20,19 @@ sound.BG_Music()
 #this is used so that if the user has not changed room, the text is not typed out again.
 type_print = True
 
+class ANSIstyles:
+    #This class can be used to format text by printing it before the text you want to format.
+    PURPLE = "\033[95m"
+    CYAN = "\033[96m"
+    DARKCYAN = "\033[36m"
+    BLUE = "\033[94m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    RED = "\033[91m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
+    END = "\033[0m"
+
 def list_of_items(items):
     """This function takes a list of items (see items.py for the definition) and
     returns a comma-separated list of item names (as a string). For example:
@@ -39,20 +52,20 @@ def return_room_items(room):
 
     items_in_room = list_of_items(room["items"])
     if not(items_in_room == ''):
-        return "There is " + items_in_room + " here."
+        return "There is " + items_in_room + " here.\n"
     else:
-        return ""
+        return "There are no items here.\n"
 
 def return_inventory_items(items):
     """This function takes a list of inventory items and displays it nicely in a string.
     It then returns this string to be used elsewhere.
     """
-
+    
+    printstr = "You don't have any items.\n"
     items_in_inven = list_of_items(items)
+    #If the player has items, return a list of them. Otherwise return the error string
     if not (items_in_inven == ''):
-        printstr = "You have " + items_in_inven + "."
-    else:
-        printstr = "You don't have any items."
+        printstr = "You have " + items_in_inven + ".\n"
     return printstr
 
 
@@ -65,9 +78,10 @@ def print_room(room):
     in the room, the list of items is printed next followed by a blank line
     (use print_room_items() for this)."""
 
-    # Display room name
-    printstr = "\n" + room["name"].upper() + "\n" + room["description"]
+    #Display room name
+    printstr = "\n"+ ANSIstyles.BOLD + room["name"].upper() + ANSIstyles.END + "\n\n" + room["description"] + "."
     typingprint.slow_print(printstr,type_print)
+    #Print items in room
     typingprint.slow_print(return_room_items(room),type_print)
 
 
@@ -81,7 +95,7 @@ def is_valid_exit(exits, chosen_exit):
     return chosen_exit in exits
 
 def calc_inven_mass(inventory):
-    """Calculates the mass of all items in the players inventory"""
+    """Calculates the mass of all items in the players inventory. Not currently used"""
     Output = 0
     for item in inventory:
         Output += item["weight"]
@@ -106,39 +120,40 @@ def execute_take(item_id):
     there is no such item in the room, this function prints
     "You cannot take that."
     """
-    #Check if the item exists
+    #Used to store the finally printed value.
+    printstr = ANSIstyles.RED + "You cannot take that." + ANSIstyles.END
+    #Check if the item exists.
     if item_id in items:
+        #Switch string input for valid item id.
         item_id = items[item_id]
+        #Check if the item can be taken.
         if item_id["take"] == True:
+            #Check if the item is in the current room.
             if item_id in current_room["items"]:
+                #Remove it from the room and put it in the players inventory.
                 inventory.append(item_id)
                 current_room["items"].remove(item_id)
-                typingprint.slow_print("Picked up " + item_id["name"] + ".")
-            else:
-                print("You cannot take that.")
-        else:
-            print("You cannot take that.")
-    else:
-        print("You cannot take that.")
+                printstr = "Picked up " + ANSIstyles.BLUE +  item_id["name"] + ANSIstyles.END + "."
+    #Will print the take message, unless the item has not be picked up.
+    return printstr
 
 def execute_drop(item_id):
     """This function takes an item_id as an argument and moves this item from the
     player's inventory to list of items in the current room. However, if there is
     no such item in the inventory, this function prints "You cannot drop that."
     """
+    #Printstr used to hold the final result of the function
+    printstr = ANSIstyles.RED + "You cannot drop that" + ANSIstyles.END
     #If item exists
     if item_id in items:
         item_id = items[item_id]
         #If item in inventory
         if item_id in inventory:
-            #Remove the item from your inventory and then
+            #Remove the item from your inventory and return a string to relay the information
             inventory.remove(item_id)
             current_room["items"].append(item_id)
-            typingprint.slow_print("Dropped " + item_id["name"] + ".")
-        else:
-            print("You cannot drop that.")
-    else:
-        print("That item does not exist.")
+            printstr = "Dropped " + ANSIstyles.BLUE + item_id["name"] + ANSIstyles.END + "."
+    return printstr
 
 def deep_inspect(item_id):
     """This function provides further information about an item if certain items are present in the players inventory"""
@@ -149,6 +164,8 @@ def execute_inspect(item_id):
     """This function takes an item_id as an argument, then prints the description of that item.
     If the item does not exist then it prints "That item does not exist".
     """
+    #Printstr used to hold the final result of the function
+    printstr = ANSIstyles.RED + "You cannot inspect that." + ANSIstyles.END
     #If the item exists
     if item_id in items:
         #Retrieve actual itme id from items list
@@ -158,64 +175,54 @@ def execute_inspect(item_id):
             #Print item description
             printstr = item_id["id"] + ":\n" + item_id["description"]
             #deep_inspect(item_id) Can be readded once items are fully finished
-        else:
-            #Return error message
-            printstr = "You cannot inspect that."
-    else:
-        #Return error message
-        printstr = "You cannot inspect that."
-    typingprint.slow_print(printstr, True)
+    return printstr
 
 def execute_remember(remembering = ""):
     """Allows the player to recall things stored in their memory.
     Takes a string for input, will check if an entry with the same string exists in memory,
     if it does, then it will print what it stores.
     """
+    printstr = ANSIstyles.RED + "You don't seem to remember anything like that." + ANSIstyles.END
     #Check if remembering has a value.
     if remembering == "":
         #If remembering is empty, then print all items in memory.
+        printstr = ""
         for memory in player["memory"]:
-            typingprint.slow_print(memory + ": " + str(player["memory"][memory]), True)
+            printstr = printstr + memory + ": " + str(player["memory"][memory]) + "\n"
     else:
         #If remembering does have a value, then
         try:
             #Print value of that memory
-            typingprint.slow_print(remembering + ": " + player["memory"][remembering], True)
-        #If the memory does not exist, print an error
+            printstr = remembering + ": " + player["memory"][remembering]
         except KeyError:
-            typingprint.slow_print("You don't seem to remember anything like that.", True)
+            pass
+    return printstr
 
 def execute_use(item_id):
     """Allows player to use an item, takes item_id as an argument"""
+    #If item fails all of the checks, this string will be printed.
+    printstr = ANSIstyles.RED + "You cannot use that." + ANSIstyles.END
     #Check if the item exists.
     if item_id in items:
         item_id = items[item_id]
-        #Check if its in the players inventory
+        #Check if its in the players inventory.
         if (item_id in inventory) or (item_id in current_room["items"]):
-            #Check if it's usable
+            #Check if it's usable.
             if "use" in item_id:
                 #Need to add check for item requirements - Urgent
-                #Print the use text
+                #Print the use text.
                 printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
-                #Apply the effect of the item on the stage
+                #Apply the effect of the item on the stage.
                 player["stage"] += item_id["use"]["stage effect"]
-                #Apply the effect of the item on the psycosis meter
+                #Apply the effect of the item on the psycosis meter.
                 player["psycosis meter"] += item_id["use"]["psycosis effect"]
+                #If the item needs to be removed after use, remove it from inventory or room.
                 if item_id["use"]["remove after use"]:
                     if item_id in inventory:
                         inventory.remove(item_id)
                     elif item_id in current_room["items"]:
                         current_room["items"].remove(item_id)
-            else:
-                #Tell the player they can't use it
-                printstr = "You cannot use that."
-        else:
-            #Tell the player they can't use it
-            printstr = "You cannot use that."
-    else:
-        #Tell the player they can't use it
-        printstr = "You cannot use that."
-    typingprint.slow_print(printstr, True)
+    return printstr
 
 def execute_command(command):
     """This function takes a command (a list of words as returned by
@@ -224,7 +231,9 @@ def execute_command(command):
     execute_take, or execute_drop, supplying the second word as the argument.
 
     """
-
+    #Default response.
+    printstr =  ""
+    #If no command inputted.
     if 0 == len(command):
         return
     #Go command section
@@ -232,40 +241,40 @@ def execute_command(command):
         if len(command) > 1:
             execute_go(command[1])
         else:
-            print("Go where?")
+            printstr =  ANSIstyles.RED + "Go where?" + ANSIstyles.END
     #Take command section
     elif command[0] == "take":
         if len(command) > 1:
-            execute_take(command[1])
+            printstr = execute_take(command[1])
         else:
-            print("Take what?")
+            printstr =  ANSIstyles.RED + "Take what?" + ANSIstyles.END
     #Drop command section
     elif command[0] == "drop":
         if len(command) > 1:
-            execute_drop(command[1])
+            printstr = execute_drop(command[1])
         else:
-            print("Drop what?")
+            printstr =  ANSIstyles.RED + "Drop what?" + ANSIstyles.END
     #Inspect command section
     elif command[0] == "inspect":
         if len(command) > 1:
-            execute_inspect(command[1])
+            printstr = execute_inspect(command[1])
         else:
-            print("Inspect what?")
+            printstr =  ANSIstyles.RED + "Inspect what?" + ANSIstyles.END
     #Remember command section
     elif command[0] == "remember":
         if len(command) > 1:
-            execute_remember(command[1])
+            printstr = execute_remember(command[1])
         else:
-            execute_remember()
+            printstr = execute_remember()
     #Use command section
     elif command[0] == "use":
         if len(command) > 1:
-            execute_use(command[1])
+            printstr = execute_use(command[1])
         else:
-            print("Use what?")
-    #If none of the above commands are entered, print an error.
+            printstr =  ANSIstyles.RED + "Use what?" + ANSIstyles.END
     else:
-        print("This makes no sense.")
+        printstr = ANSIstyles.RED + "Invalid command!" + ANSIstyles.END
+    typingprint.slow_print(printstr, True)
 
 def print_item_unified():
     pass

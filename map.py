@@ -87,7 +87,8 @@ room_outside = {
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"north": "Hallway"},
     #Items contains a list of the items available in the room on game start.
-    "items": []
+    "items": [],
+    "items default": []
 }
 
 #Contains all of the rooms in the game with an identifier.

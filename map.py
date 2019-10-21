@@ -91,6 +91,20 @@ room_outside = {
     "items default": []
 }
 
+room_null = {
+    "name": "Null",
+
+    "name": "????",
+
+    "description": """You don't recognise this place, you decide to continue looking for the bathroom...
+Although you have no idea where to start...""",
+
+    "exits": {"north": "Null", "south": "Null", "west": "Null", "east": "Null"},
+    
+    "items": [],
+    "items default": []
+}
+
 #Contains all of the rooms in the game with an identifier.
 #For example, "Start": room_example.
 rooms = {
@@ -100,5 +114,6 @@ rooms = {
     "Lounge": room_living_room,
     "Office": room_office,
     "Kitchen": room_kitchen,
-    "Outside": room_outside
+    "Outside": room_outside,
+    "Null": room_null
 }

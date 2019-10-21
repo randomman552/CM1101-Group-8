@@ -9,6 +9,8 @@ from player import *
 import typingprint
 import pygame
 
+#Initialise inventory as a global variable
+inventory = []
 #Initialise pygame and and its mixer in the main thread.
 pygame.init()
 pygame.mixer.init()
@@ -94,12 +96,6 @@ def is_valid_exit(exits, chosen_exit):
 
     return chosen_exit in exits
 
-def calc_inven_mass(inventory):
-    """Calculates the mass of all items in the players inventory. Not currently used"""
-    Output = 0
-    for item in inventory:
-        Output += item["weight"]
-    return Output
 
 def execute_go(direction):
     """This function, given the direction (e.g. "south") updates the current room
@@ -198,6 +194,20 @@ def execute_remember(remembering = ""):
         except KeyError:
             pass
     return printstr
+def check_item_conditions(item_id):
+    pass
+
+def apply_item_effects(item_id):
+    """This function takes an item id as an argument, and changes values in the program depending on its effects."""
+    global player
+    use = item_id["use"]
+    if "stage effect" in use:
+        player["stage"] += use["stage effect"]
+    if "psychosis effect" in use:
+        player["psychosis meter"] += use["psychosis effect"]
+    if "items" in use:
+        for item in use["items"]:
+            inventory.append(item)
 
 def execute_use(item_id):
     """Allows player to use an item, takes item_id as an argument"""
@@ -213,10 +223,7 @@ def execute_use(item_id):
                 #Need to add check for item requirements - Urgent
                 #Print the use text.
                 printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
-                #Apply the effect of the item on the stage.
-                player["stage"] += item_id["use"]["stage effect"]
-                #Apply the effect of the item on the psycosis meter.
-                player["psycosis meter"] += item_id["use"]["psycosis effect"]
+                apply_item_effects(item_id)
                 #If the item needs to be removed after use, remove it from inventory or room.
                 if item_id["use"]["remove after use"]:
                     if item_id in inventory:
@@ -344,7 +351,7 @@ def print_menu(exits, room_items, inv_items):
     the appropriate format. The room into which an exit leads is obtained
     using the function exit_leads_to(). Then, it should print a list of commands
     related to items:"""
-    
+
     #Print exits
     print_exits(exits)
     #Print the items which you can take.
@@ -387,32 +394,41 @@ def move(exits, direction):
     sound.play_exit_sound()
     return rooms[exits[direction]]
 
-def check_win_conditions():
-    """This function checks whether win conditions have been met.
-    If the win conditions are true then it will return true"""
-    
-    #Need to add code to read definitions of win conditions
-    Output = False
-    return Output
 def reset_game():
     global current_room
     global previous_room
     global player
     global inventory
+    global rooms
+    #Reset location
     current_room = rooms["Bedroom"]
     previous_room = ""
+    #Reset player dictionary, needs to be remade to be done like the rooms.
     player = playerdefault
-    inventory = []
+    inventory = player["inventory"]
+    #Clear rooms of all items and add the default items for each room to that room.
+    #This is done like this rather than assigning the default items value to items to prevent the editing of the default values.
+    #This allows for the restarting of the game without restarting the whole program.
     for room in rooms:
-        try:
-            rooms[room]["items"] = rooms[room]["items default"]
-        except KeyError:
-            pass
+        #Clear all items from each room
+        rooms[room]["items"] = []
+        #Add each item to that room
+        for item in rooms[room]["items default"]:
+            rooms[room]["items"].append(item)
+
+def check_win_conditions():
+    """This function checks whether win conditions have been met.
+    If the win conditions are true then it will return true"""
+    #Get the current stage from player dictionary
+    stage = player["stage"]
+    Output = False
+    return Output
 
 # This is the entry point of our program
 def main():
     #This loop allows the main menu to be reopened when we break out of the main game loop.
     while True:
+
         option = mainmenu.menu(["New game ", "Load game", "Quit     "])
         if option.strip() == "Quit":
             quit()
@@ -421,42 +437,56 @@ def main():
             #Need loading code before implementation.
         elif option.strip() == "New game":
             reset_game()
+        
         # Main game loop
         win = False
-        while win == False:
-            global previous_room
-            global type_print
-            os.system("cls")
-
-            #Update type_print
-            type_print = not bool(previous_room == current_room)
-
-            # Display game status (room description, inventory etc.)
-            print_room(current_room)
-            previous_room = current_room
-            typingprint.slow_print(return_inventory_items(inventory),type_print)
-
-            # Show the menu with possible actions and ask the player
-            command = menu(current_room["exits"], current_room["items"], inventory)
-
-            
-            # Execute the player's command
-            if command[0] in ["quit","load","save"]:
-                #If the command is meant to carry out a command outside the game, for example quiting the game.
-                if command[0] == "quit":
-                    break #Breaks out of the loop, and starts the main menu again
-                elif command[0] == "load":
-                    pass #Call load function
-                elif command[0] == "save":
-                    pass #Call save function
+        while not win:
+            if player["stage"] == 0:
+                #Set values for first stage, then increment stage by 1 to enter it.
+                player["stage"] += 1
+            elif player["stage"] == 2:
+                #Set values for second stage, then increment stage by 1 to enter it.
+                player["stage"] += 1
+            elif player["stage"] == 4:
+                #Set values for third stage, then increment stage by 1 to enter it.
+                player["stage"] += 1
+            elif player["stage"] <= 6:
+                #All stages complete, set win to true and exit the game.
+                win = True
             else:
-                #If the command is meant to be carried out within the game.
-                execute_command(command)
-            
-            #Check win conditions
-            win = check_win_conditions()
+                global previous_room
+                global type_print
+                os.system("cls")
 
-            os.system("pause")
+                #Update type_print
+                type_print = not bool(previous_room == current_room)
+
+                # Display game status (room description, inventory etc.)
+                print_room(current_room)
+                previous_room = current_room
+                typingprint.slow_print(return_inventory_items(inventory),type_print)
+
+                # Show the menu with possible actions and ask the player
+                command = menu(current_room["exits"], current_room["items"], inventory)
+
+                
+                # Execute the player's command
+                if command[0] in ["quit","load","save"]:
+                    #If the command is meant to carry out a command outside the game, for example quiting the game.
+                    if command[0] == "quit":
+                        break #Breaks out of the loop, and starts the main menu again
+                    elif command[0] == "load":
+                        pass #Call load function
+                    elif command[0] == "save":
+                        pass #Call save function
+                else:
+                    #If the command is meant to be carried out within the game.
+                    execute_command(command)
+                
+                #Check win conditions
+                win = check_win_conditions()
+
+                os.system("pause")
 
 
 

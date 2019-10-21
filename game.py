@@ -22,6 +22,24 @@ sound.BG_Music()
 #this is used so that if the user has not changed room, the text is not typed out again.
 type_print = True
 
+def generate_GETs(items):
+    """This function goes through all items inputted into it, 
+    and finds what event triggers are present in all of them.
+    These are then added to the GETs dict"""
+    output = {}
+    for item in items:
+        item = items[item]
+        if "use" in item:
+            if "conditions" in item["use"]:
+                for condition in item["use"]["conditions"]:
+                    if not condition in output:
+                        output.update({condition: False})
+    return output
+
+#Global event triggers dictionary
+#This is generated when the game starts, so any changes
+GETs = generate_GETs(items)
+
 class ANSIstyles:
     #This class can be used to format text by printing it before the text you want to format.
     PURPLE = "\033[95m"
@@ -194,12 +212,19 @@ def execute_remember(remembering = ""):
         except KeyError:
             pass
     return printstr
+
 def check_item_conditions(item_id):
-    pass
+    """Checks if item GETs requirements are met"""
+    output = True
+    for condition in item_id["use"]["conditions"]:
+        if not GETs[condition] == item_id["use"]["conditions"][condition]:
+            return False
+    return output
 
 def apply_item_effects(item_id):
     """This function takes an item id as an argument, and changes values in the program depending on its effects."""
     global player
+    global GETs
     use = item_id["use"]
     if "stage effect" in use:
         player["stage"] += use["stage effect"]
@@ -208,6 +233,9 @@ def apply_item_effects(item_id):
     if "items" in use:
         for item in use["items"]:
             inventory.append(item)
+    if "GETs effect" in use:
+        for effect in use["GETs effect"]:
+            GETs[effect] = use["GETs effect"][effect]
 
 def execute_use(item_id):
     """Allows player to use an item, takes item_id as an argument"""
@@ -220,16 +248,17 @@ def execute_use(item_id):
         if (item_id in inventory) or (item_id in current_room["items"]):
             #Check if it's usable.
             if "use" in item_id:
-                #Need to add check for item requirements - Urgent
-                #Print the use text.
-                printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
-                apply_item_effects(item_id)
-                #If the item needs to be removed after use, remove it from inventory or room.
-                if item_id["use"]["remove after use"]:
-                    if item_id in inventory:
-                        inventory.remove(item_id)
-                    elif item_id in current_room["items"]:
-                        current_room["items"].remove(item_id)
+                #Check if item requirements are met
+                if(check_item_conditions(item_id)):
+                    #Print the use text.
+                    printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
+                    apply_item_effects(item_id)
+                    #If the item needs to be removed after use, remove it from inventory or room.
+                    if item_id["use"]["remove after use"]:
+                        if item_id in inventory:
+                            inventory.remove(item_id)
+                        elif item_id in current_room["items"]:
+                            current_room["items"].remove(item_id)
     return printstr
 
 def execute_command(command):
@@ -291,7 +320,7 @@ def return_exit(direction, leads_to):
 
 def print_exits(exits):
     if len(exits) > 1:
-        printstr = "You can GO:\n"
+        printstr = "You can " + ANSIstyles.YELLOW +  "GO:\n" + ANSIstyles.END
         for direction in exits:
             printstr = printstr + return_exit(direction,exit_leads_to(exits, direction))
         typingprint.slow_print(printstr, type_print)
@@ -303,7 +332,7 @@ def print_take_item(items):
         if item["take"] == True:
             printstr += ", " + item["id"]
     if not(printstr == ""):
-        printstr = "You can TAKE:\n" + printstr[2::] + ".\n"
+        printstr = "You can " + ANSIstyles.YELLOW +  "TAKE:\n" + ANSIstyles.END + printstr[2::] + ".\n"
         typingprint.slow_print(printstr, type_print)
 
 def print_drop_item(items):
@@ -312,17 +341,17 @@ def print_drop_item(items):
     for item in items:
             printstr += ", " + item["id"]
     if not(printstr == ""):
-        printstr = "You can DROP:\n" + printstr[2::] + ".\n"
+        printstr = "You can " + ANSIstyles.YELLOW +  "DROP:\n" + ANSIstyles.END + printstr[2::] + ".\n"
         typingprint.slow_print(printstr, type_print)
 
 def print_use_item(items):
     """This function prints a list of items which can be used"""
     printstr = ""
     for item in items:
-        if "use" in item:
+        if "use" in item and check_item_conditions(item):
             printstr += ", " + item["id"]
     if not(printstr == ""):
-        printstr = "You can USE:\n" + printstr[2::] + ".\n"
+        printstr = "You can " + ANSIstyles.YELLOW +  "USE:\n" + ANSIstyles.END + printstr[2::] + ".\n"
         typingprint.slow_print(printstr, type_print)
 
 def print_inspect_item(items):
@@ -332,7 +361,7 @@ def print_inspect_item(items):
         if ("description" in item) or ("inspection" in item):
             printstr += ", " + item["id"]
     if not(printstr == ""):
-        printstr = "You can INSPECT:\n" + printstr[2::] + ".\n"
+        printstr = "You can " + ANSIstyles.YELLOW +  "INSPECT:\n" + ANSIstyles.END + printstr[2::] + ".\n"
         typingprint.slow_print(printstr, type_print)
 
 def exit_leads_to(exits, direction):
@@ -441,8 +470,10 @@ def main():
         # Main game loop
         win = False
         while not win:
+            os.system("cls")
             if player["stage"] == 0:
                 #Set values for first stage, then increment stage by 1 to enter it.
+                global current_room
                 player["stage"] += 1
             elif player["stage"] == 2:
                 #Set values for second stage, then increment stage by 1 to enter it.
@@ -450,14 +481,12 @@ def main():
             elif player["stage"] == 4:
                 #Set values for third stage, then increment stage by 1 to enter it.
                 player["stage"] += 1
-            elif player["stage"] <= 6:
+            elif player["stage"] >= 6:
                 #All stages complete, set win to true and exit the game.
                 win = True
             else:
                 global previous_room
                 global type_print
-                os.system("cls")
-
                 #Update type_print
                 type_print = not bool(previous_room == current_room)
 

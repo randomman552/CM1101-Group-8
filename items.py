@@ -20,8 +20,9 @@ are pills inside. They look like Skittles""",
         "text": """You shake the bottle and the last two pills fall out.
 You swallow the pills quickly, and get ready to move on.""",
         "stage effect": 0,
-        "psycosis effect": 0,
-        "remove after use": True
+        "psychosis effect": 0,
+        "remove after use": True,
+        "items": []
     }
     }
 
@@ -70,8 +71,9 @@ You can't remember why.""",
         "conditions": None,
         "text": "You don't want to do that.",
         "stage effect": 0,
-        "psycosis effect": 0,
-        "remove after use": False
+        "psychosis effect": 0,
+        "remove after use": False,
+        "items": []
     }
     }
 
@@ -93,8 +95,9 @@ item_mirror = {
         "conditions": None,
         "text": "You see yourself reflected in the mirror.",
         "stage effect": 0,
-        "psycosis effect": 0,
-        "remove after use": False
+        "psychosis effect": 0,
+        "remove after use": False,
+        "items": []
     }
     }
     
@@ -125,8 +128,9 @@ You do live in wales after all.""",
         "conditions": None,
         "text": "You put the coat on, you find its warmth comforting.",
         "stage effect": 0,
-        "psycosis effect": -1,
-        "remove after use": True
+        "psychosis effect": -1,
+        "remove after use": True,
+        "items": []
     }
     }
 

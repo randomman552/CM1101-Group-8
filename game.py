@@ -8,6 +8,9 @@ os.system("mode con: cols="+ str(mainmenu.maxwidth) + " lines="+ str(mainmenu.ma
 from player import *
 import typingprint
 import pygame
+from pygame import mixer
+from save import *
+from load import *
 
 #Initialise inventory as a global variable
 inventory = []
@@ -465,6 +468,31 @@ def reset_game():
     GETs = {}
     GETs = generate_GETs(items)
 
+def load_reset():
+    global current_room
+    global previous_room
+    global player
+    global inventory
+    global rooms
+    global GETs
+
+    current_room = rooms["Bathroom"]
+    previous_room = ""
+
+    player = playerdefault
+    inventory = player["inventory"]
+
+    for room in rooms:
+        #Clear all items from each room.
+        rooms[room]["items"] = []
+        #Add each item to that room.
+        for item in rooms[room]["items default"]:
+            rooms[room]["items"].append(item)
+    #Regenerate GETs with default values.
+    GETs = {}
+    GETs = generate_GETs(items)
+
+
 def check_win_conditions():
     """This function checks whether win conditions have been met.
     If the win conditions are true then it will return true"""
@@ -482,7 +510,8 @@ def main():
         if option.strip() == "Quit":
             quit()
         elif option.strip() == "Load game":
-            mainmenu.menu(["SAVES LIST HERE"])
+            mainmenu.menu(find_saves())
+            load_reset()
             #Need loading code before implementation.
         elif option.strip() == "New game":
             reset_game()
@@ -491,7 +520,7 @@ def main():
         win = False
         while not win:
             #Clear screen at the begining of each loop
-            os.system("cls")
+            os.system("clear")
             if player["stage"] == 0:
                 #Set values for first stage, then increment stage by 1 to enter it.
                 player["stage"] += 1
@@ -516,9 +545,9 @@ def main():
                     if command[0] == "quit":
                         break #Breaks out of the loop, and starts the main menu again
                     elif command[0] == "load":
-                        pass #Call load function
+                        pass
                     elif command[0] == "save":
-                        pass #Call save function
+                        save_data(player)
                 else:
                     #If the command is meant to be carried out within the game.
                     execute_command(command)

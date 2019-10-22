@@ -1,0 +1,1 @@
+{'stage': 1, 'psychosis meter': 0, 'inventory': [], 'description': {}, 'memory': {'name': 'Bob', 'age': '3000', 'password': []}}

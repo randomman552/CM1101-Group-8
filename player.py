@@ -19,6 +19,7 @@ def Get_Player_Age():
         print("Thats not a number!")
         os.system("pause")
         quit()
+        
 player = {}
 playerdefault = {
     "stage": 0,

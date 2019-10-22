@@ -47,7 +47,7 @@ item_book = {
     
     
     "inspection":
-    """ A page is missing. You notice that on page 14 your name is written in bold on the end.""",
+    """ A page is missing. You notice that on page 14 your name is written in bold on the end."""
     }
 
 item_family_picture = {

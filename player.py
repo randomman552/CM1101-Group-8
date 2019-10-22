@@ -22,7 +22,8 @@ def Get_Player_Age():
 player = {}
 playerdefault = {
     "stage": 0,
-    "psycosis meter": 0,
+    "psychosis meter": 0,
+    "inventory": [],
     "description": {
 
     },
@@ -39,9 +40,6 @@ def Name_Shuffle(name):
     result = ''.join(l)
     return result
 
-#Settings for max carry weight and starting inventory
-max_carry_weight = 2
-inventory = []
 
 # Start game in the bedroom
 current_room = rooms["Bedroom"]

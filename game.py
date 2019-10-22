@@ -9,7 +9,10 @@ from player import *
 import typingprint
 import pygame
 
-#Initialise pygame and and its mixer in the main thread.
+#Initialise inventory as a global variable
+inventory = []
+#Initialise pygame and and its mixer in the main thread. 
+#Pygame is used in this project, but is only used to play sound
 pygame.init()
 pygame.mixer.init()
 #Start background music, can be stopped at any point by calling BG_Music(False)
@@ -19,6 +22,52 @@ sound.BG_Music()
 #for example, typingprint.slow_type("Hello", type_print) would print instantly if print_type was true, and type it if false.
 #this is used so that if the user has not changed room, the text is not typed out again.
 type_print = True
+
+def generate_GETs(items):
+    """This function goes through all items inputted into it, 
+    and finds what event triggers are present in all of them.
+    These are then added to the GETs dict"""
+    #Set output to an empty dict to start
+    output = {}
+    #For each item in the game
+    for item in items:
+        #Switch string for actual itme dict
+        item = items[item]
+        #If item is usable
+        if "use" in item:
+            #If it has conditions
+            if "conditions" in item["use"]:
+                #For each condition
+                for condition in item["use"]["conditions"]:
+                    #Add the condition to the output, ignore any that have already been added
+                    if not condition in output:
+                        #Detect the type of variable assigned to the GET, and give each GET a default value of that type
+                        item_type = type(item["use"]["conditions"][condition])
+                        if  item_type == bool:
+                            default_value = False
+                        elif item_type == str:
+                            default_value = ""
+                        elif item_type == int or item_type == float:
+                            default_value = 0
+                        output.update({condition: default_value})
+    return output
+
+#Global event triggers dictionary
+#This is generated when the game starts, so any changes
+GETs = generate_GETs(items)
+
+class ANSIstyles:
+    #This class can be used to format text by printing it before the text you want to format.
+    PURPLE = "\033[95m"
+    CYAN = "\033[96m"
+    DARKCYAN = "\033[36m"
+    BLUE = "\033[94m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    RED = "\033[91m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
+    END = "\033[0m"
 
 def list_of_items(items):
     """This function takes a list of items (see items.py for the definition) and
@@ -39,20 +88,20 @@ def return_room_items(room):
 
     items_in_room = list_of_items(room["items"])
     if not(items_in_room == ''):
-        return "There is " + items_in_room + " here."
+        return "There is " + items_in_room + " here.\n"
     else:
-        return ""
+        return "There are no items here.\n"
 
 def return_inventory_items(items):
     """This function takes a list of inventory items and displays it nicely in a string.
     It then returns this string to be used elsewhere.
     """
-
+    
+    printstr = "You don't have any items.\n"
     items_in_inven = list_of_items(items)
+    #If the player has items, return a list of them. Otherwise return the error string
     if not (items_in_inven == ''):
-        printstr = "You have " + items_in_inven + "."
-    else:
-        printstr = "You don't have any items."
+        printstr = "You have " + items_in_inven + ".\n"
     return printstr
 
 
@@ -65,9 +114,10 @@ def print_room(room):
     in the room, the list of items is printed next followed by a blank line
     (use print_room_items() for this)."""
 
-    # Display room name
-    printstr = "\n" + room["name"].upper() + "\n" + room["description"]
+    #Display room name in BOLD, then print description
+    printstr = "\n"+ ANSIstyles.BOLD + room["name"].upper() + ANSIstyles.END + "\n\n" + room["description"] + ".\n"
     typingprint.slow_print(printstr,type_print)
+    #Print items in room
     typingprint.slow_print(return_room_items(room),type_print)
 
 
@@ -80,12 +130,6 @@ def is_valid_exit(exits, chosen_exit):
 
     return chosen_exit in exits
 
-def calc_inven_mass(inventory):
-    """Calculates the mass of all items in the players inventory"""
-    Output = 0
-    for item in inventory:
-        Output += item["weight"]
-    return Output
 
 def execute_go(direction):
     """This function, given the direction (e.g. "south") updates the current room
@@ -96,9 +140,10 @@ def execute_go(direction):
     global current_room
     if is_valid_exit(current_room["exits"],direction):
         current_room = move(current_room["exits"],direction)
-        typingprint.slow_print("Moving to " + current_room["name"])
+        printstr = "Moving to " + current_room["name"]
     else:
-        typingprint.slow_print("You cannot go there.")
+        printstr = ANSIstyles.RED + "You cannot go there." + ANSIstyles.END
+    return printstr
 
 def execute_take(item_id):
     """This function takes an item_id as an argument and moves this item from the
@@ -106,39 +151,40 @@ def execute_take(item_id):
     there is no such item in the room, this function prints
     "You cannot take that."
     """
-    #Check if the item exists
+    #Used to store the finally printed value.
+    printstr = ANSIstyles.RED + "You cannot take that." + ANSIstyles.END
+    #Check if the item exists.
     if item_id in items:
+        #Switch string input for valid item id.
         item_id = items[item_id]
+        #Check if the item can be taken.
         if item_id["take"] == True:
+            #Check if the item is in the current room.
             if item_id in current_room["items"]:
+                #Remove it from the room and put it in the players inventory.
                 inventory.append(item_id)
                 current_room["items"].remove(item_id)
-                typingprint.slow_print("Picked up " + item_id["name"] + ".")
-            else:
-                print("You cannot take that.")
-        else:
-            print("You cannot take that.")
-    else:
-        print("You cannot take that.")
+                printstr = "Picked up " + ANSIstyles.BLUE +  item_id["name"] + ANSIstyles.END + "."
+    #Will print the take message, unless the item has not be picked up.
+    return printstr
 
 def execute_drop(item_id):
     """This function takes an item_id as an argument and moves this item from the
     player's inventory to list of items in the current room. However, if there is
     no such item in the inventory, this function prints "You cannot drop that."
     """
+    #Printstr used to hold the final result of the function
+    printstr = ANSIstyles.RED + "You cannot drop that" + ANSIstyles.END
     #If item exists
     if item_id in items:
         item_id = items[item_id]
         #If item in inventory
         if item_id in inventory:
-            #Remove the item from your inventory and then
+            #Remove the item from your inventory and return a string to relay the information
             inventory.remove(item_id)
             current_room["items"].append(item_id)
-            typingprint.slow_print("Dropped " + item_id["name"] + ".")
-        else:
-            print("You cannot drop that.")
-    else:
-        print("That item does not exist.")
+            printstr = "Dropped " + ANSIstyles.BLUE + item_id["name"] + ANSIstyles.END + "."
+    return printstr
 
 def deep_inspect(item_id):
     """This function provides further information about an item if certain items are present in the players inventory"""
@@ -149,6 +195,8 @@ def execute_inspect(item_id):
     """This function takes an item_id as an argument, then prints the description of that item.
     If the item does not exist then it prints "That item does not exist".
     """
+    #Printstr used to hold the final result of the function
+    printstr = ANSIstyles.RED + "You cannot inspect that." + ANSIstyles.END
     #If the item exists
     if item_id in items:
         #Retrieve actual itme id from items list
@@ -158,64 +206,76 @@ def execute_inspect(item_id):
             #Print item description
             printstr = item_id["id"] + ":\n" + item_id["description"]
             #deep_inspect(item_id) Can be readded once items are fully finished
-        else:
-            #Return error message
-            printstr = "You cannot inspect that."
-    else:
-        #Return error message
-        printstr = "You cannot inspect that."
-    typingprint.slow_print(printstr, True)
+    return printstr
 
 def execute_remember(remembering = ""):
     """Allows the player to recall things stored in their memory.
     Takes a string for input, will check if an entry with the same string exists in memory,
     if it does, then it will print what it stores.
     """
+    printstr = ANSIstyles.RED + "You don't seem to remember anything like that." + ANSIstyles.END
     #Check if remembering has a value.
     if remembering == "":
         #If remembering is empty, then print all items in memory.
+        printstr = ""
         for memory in player["memory"]:
-            typingprint.slow_print(memory + ": " + str(player["memory"][memory]), True)
+            printstr = printstr + memory + ": " + str(player["memory"][memory]) + "\n"
     else:
         #If remembering does have a value, then
         try:
             #Print value of that memory
-            typingprint.slow_print(remembering + ": " + player["memory"][remembering], True)
-        #If the memory does not exist, print an error
+            printstr = remembering + ": " + player["memory"][remembering]
         except KeyError:
-            typingprint.slow_print("You don't seem to remember anything like that.", True)
+            pass
+    return printstr
+
+def check_item_conditions(item_id):
+    """Checks if item GETs requirements are met"""
+    output = True
+    for condition in item_id["use"]["conditions"]:
+        if not GETs[condition] == item_id["use"]["conditions"][condition]:
+            return False
+    return output
+
+def apply_item_effects(item_id):
+    """This function takes an item id as an argument, and changes values in the program depending on its effects."""
+    global player
+    global GETs
+    use = item_id["use"]
+    if "stage effect" in use:
+        player["stage"] += use["stage effect"]
+    if "psychosis effect" in use:
+        player["psychosis meter"] += use["psychosis effect"]
+    if "items" in use:
+        for item in use["items"]:
+            inventory.append(item)
+    if "GETs effect" in use:
+        for effect in use["GETs effect"]:
+            GETs[effect] = use["GETs effect"][effect]
 
 def execute_use(item_id):
     """Allows player to use an item, takes item_id as an argument"""
+    #If item fails all of the checks, this string will be printed.
+    printstr = ANSIstyles.RED + "You cannot use that." + ANSIstyles.END
     #Check if the item exists.
     if item_id in items:
         item_id = items[item_id]
-        #Check if its in the players inventory
+        #Check if its in the players inventory.
         if (item_id in inventory) or (item_id in current_room["items"]):
-            #Check if it's usable
+            #Check if it's usable.
             if "use" in item_id:
-                #Need to add check for item requirements - Urgent
-                #Print the use text
-                printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
-                #Apply the effect of the item on the stage
-                player["stage"] += item_id["use"]["stage effect"]
-                #Apply the effect of the item on the psycosis meter
-                player["psycosis meter"] += item_id["use"]["psycosis effect"]
-                if item_id["use"]["remove after use"]:
-                    if item_id in inventory:
-                        inventory.remove(item_id)
-                    elif item_id in current_room["items"]:
-                        current_room["items"].remove(item_id)
-            else:
-                #Tell the player they can't use it
-                printstr = "You cannot use that."
-        else:
-            #Tell the player they can't use it
-            printstr = "You cannot use that."
-    else:
-        #Tell the player they can't use it
-        printstr = "You cannot use that."
-    typingprint.slow_print(printstr, True)
+                #Check if item requirements are met
+                if(check_item_conditions(item_id)):
+                    #Print the use text.
+                    printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
+                    apply_item_effects(item_id)
+                    #If the item needs to be removed after use, remove it from inventory or room.
+                    if item_id["use"]["remove after use"]:
+                        if item_id in inventory:
+                            inventory.remove(item_id)
+                        elif item_id in current_room["items"]:
+                            current_room["items"].remove(item_id)
+    return printstr
 
 def execute_command(command):
     """This function takes a command (a list of words as returned by
@@ -224,57 +284,62 @@ def execute_command(command):
     execute_take, or execute_drop, supplying the second word as the argument.
 
     """
-
+    #Default response.
+    printstr =  ""
+    #If no command inputted.
     if 0 == len(command):
         return
     #Go command section
     if command[0] == "go":
         if len(command) > 1:
-            execute_go(command[1])
+            printstr = execute_go(command[1])
         else:
-            print("Go where?")
+            printstr =  ANSIstyles.RED + "Go where?" + ANSIstyles.END
     #Take command section
     elif command[0] == "take":
         if len(command) > 1:
-            execute_take(command[1])
+            printstr = execute_take(command[1])
         else:
-            print("Take what?")
+            printstr =  ANSIstyles.RED + "Take what?" + ANSIstyles.END
     #Drop command section
     elif command[0] == "drop":
         if len(command) > 1:
-            execute_drop(command[1])
+            printstr = execute_drop(command[1])
         else:
-            print("Drop what?")
+            printstr =  ANSIstyles.RED + "Drop what?" + ANSIstyles.END
     #Inspect command section
     elif command[0] == "inspect":
         if len(command) > 1:
-            execute_inspect(command[1])
+            printstr = execute_inspect(command[1])
         else:
-            print("Inspect what?")
+            printstr =  ANSIstyles.RED + "Inspect what?" + ANSIstyles.END
     #Remember command section
     elif command[0] == "remember":
         if len(command) > 1:
-            execute_remember(command[1])
+            printstr = execute_remember(command[1])
         else:
-            execute_remember()
+            printstr = execute_remember()
     #Use command section
     elif command[0] == "use":
         if len(command) > 1:
-            execute_use(command[1])
+            printstr = execute_use(command[1])
         else:
-            print("Use what?")
-    #If none of the above commands are entered, print an error.
+            printstr =  ANSIstyles.RED + "Use what?" + ANSIstyles.END
     else:
-        print("This makes no sense.")
+        #If the command is invalid, change the printstr to reflect so
+        printstr = ANSIstyles.RED + "Invalid command!" + ANSIstyles.END
+    typingprint.slow_print(printstr, True)
 
-def print_item_unified():
-    pass
+def return_exit(direction, leads_to):
+    """This function returns a line to print_exits, these are then printed out in the standard menu format:"""
+    return direction.upper() + " : " + leads_to + ".\n"
 
-def print_exit(direction, leads_to):
-    """This function prints a line of a menu of exits. It takes a direction (the
-    name of an exit) and the name of the room into which it leads (leads_to),
-    and should print a menu line in the following format:"""
-    typingprint.slow_print("GO " + direction.upper() + " to " + leads_to + ".", type_print)
+def print_exits(exits):
+    if len(exits) > 0:
+        printstr = "You can " + ANSIstyles.YELLOW +  "GO:\n" + ANSIstyles.END
+        for direction in exits:
+            printstr = printstr + return_exit(direction,exit_leads_to(exits, direction))
+        typingprint.slow_print(printstr, type_print)
 
 def print_take_item(items):
     """This function prints a menu of items which can be taken from the current room"""
@@ -283,7 +348,7 @@ def print_take_item(items):
         if item["take"] == True:
             printstr += ", " + item["id"]
     if not(printstr == ""):
-        printstr = "You can TAKE:\n" + printstr[2::]
+        printstr = "You can " + ANSIstyles.YELLOW +  "TAKE:\n" + ANSIstyles.END + printstr[2::] + ".\n"
         typingprint.slow_print(printstr, type_print)
 
 def print_drop_item(items):
@@ -292,17 +357,17 @@ def print_drop_item(items):
     for item in items:
             printstr += ", " + item["id"]
     if not(printstr == ""):
-        printstr = "You can DROP:\n" + printstr[2::]
+        printstr = "You can " + ANSIstyles.YELLOW +  "DROP:\n" + ANSIstyles.END + printstr[2::] + ".\n"
         typingprint.slow_print(printstr, type_print)
 
 def print_use_item(items):
     """This function prints a list of items which can be used"""
     printstr = ""
     for item in items:
-        if "use" in item:
+        if "use" in item and check_item_conditions(item):
             printstr += ", " + item["id"]
     if not(printstr == ""):
-        printstr = "You can USE:\n" + printstr[2::]
+        printstr = "You can " + ANSIstyles.YELLOW +  "USE:\n" + ANSIstyles.END + printstr[2::] + ".\n"
         typingprint.slow_print(printstr, type_print)
 
 def print_inspect_item(items):
@@ -312,7 +377,7 @@ def print_inspect_item(items):
         if ("description" in item) or ("inspection" in item):
             printstr += ", " + item["id"]
     if not(printstr == ""):
-        printstr = "You can INSPECT:\n" + printstr[2::]
+        printstr = "You can " + ANSIstyles.YELLOW +  "INSPECT:\n" + ANSIstyles.END + printstr[2::] + ".\n"
         typingprint.slow_print(printstr, type_print)
 
 def exit_leads_to(exits, direction):
@@ -332,11 +397,8 @@ def print_menu(exits, room_items, inv_items):
     using the function exit_leads_to(). Then, it should print a list of commands
     related to items:"""
 
-    typingprint.slow_print("You can:", type_print)
-    # Iterate over available exits.
-    for direction in exits:
-        # Print the exit name and where it leads to.
-        print_exit(direction, exit_leads_to(exits, direction))
+    #Print exits
+    print_exits(exits)
     #Print the items which you can take.
     print_take_item(room_items)
     #Print the items which you can drop.
@@ -377,27 +439,45 @@ def move(exits, direction):
     sound.play_exit_sound()
     return rooms[exits[direction]]
 
-def check_win_conditions():
-    """This function checks whether win conditions have been met.
-    If the win conditions are true then it will return true"""
-    
-    #Need to add code to read definitions of win conditions
-    Output = False
-    return Output
 def reset_game():
     global current_room
     global previous_room
     global player
     global inventory
+    global rooms
+    global GETs
+    #Reset location
     current_room = rooms["Bedroom"]
     previous_room = ""
+    #Reset player dictionary, needs to be remade to be done like the rooms.
     player = playerdefault
-    inventory = []
+    inventory = player["inventory"]
+    #Clear rooms of all items and add the default items for each room to that room.
+    #This is done like this rather than assigning the default items value to items to prevent the editing of the default values.
+    #This allows for the restarting of the game without restarting the whole program.
+    for room in rooms:
+        #Clear all items from each room.
+        rooms[room]["items"] = []
+        #Add each item to that room.
+        for item in rooms[room]["items default"]:
+            rooms[room]["items"].append(item)
+    #Regenerate GETs with default values.
+    GETs = {}
+    GETs = generate_GETs(items)
+
+def check_win_conditions():
+    """This function checks whether win conditions have been met.
+    If the win conditions are true then it will return true"""
+    #Get the current stage from player dictionary
+    stage = player["stage"]
+    Output = False
+    return Output
 
 # This is the entry point of our program
 def main():
     #This loop allows the main menu to be reopened when we break out of the main game loop.
     while True:
+
         option = mainmenu.menu(["New game ", "Load game", "Quit     "])
         if option.strip() == "Quit":
             quit()
@@ -406,42 +486,47 @@ def main():
             #Need loading code before implementation.
         elif option.strip() == "New game":
             reset_game()
+        
         # Main game loop
         win = False
-        while win == False:
-            global previous_room
-            global type_print
+        while not win:
+            #Clear screen at the begining of each loop
             os.system("cls")
-
-            #Update type_print
-            type_print = not bool(previous_room == current_room)
-
-            # Display game status (room description, inventory etc.)
-            print_room(current_room)
-            previous_room = current_room
-            typingprint.slow_print(return_inventory_items(inventory),type_print)
-
-            # Show the menu with possible actions and ask the player
-            command = menu(current_room["exits"], current_room["items"], inventory)
-
-            
-            # Execute the player's command
-            if command[0] in ["quit","load","save"]:
-                #If the command is meant to carry out a command outside the game, for example quiting the game.
-                if command[0] == "quit":
-                    break #Breaks out of the loop, and starts the main menu again
-                elif command[0] == "load":
-                    pass #Call load function
-                elif command[0] == "save":
-                    pass #Call save function
+            if player["stage"] == 0:
+                #Set values for first stage, then increment stage by 1 to enter it.
+                player["stage"] += 1
             else:
-                #If the command is meant to be carried out within the game.
-                execute_command(command)
-            
-            #Check win conditions
-            win = check_win_conditions()
+                global previous_room
+                global type_print
+                #Update type_print
+                type_print = not bool(previous_room == current_room)
 
-            os.system("pause")
+                # Display game status (room description, inventory etc.)
+                print_room(current_room)
+                previous_room = current_room
+                typingprint.slow_print(return_inventory_items(inventory),type_print)
+
+                # Show the menu with possible actions and ask the player
+                command = menu(current_room["exits"], current_room["items"], inventory)
+
+                
+                # Execute the player's command
+                if command[0] in ["quit","load","save"]:
+                    #If the command is meant to carry out a command outside the game, for example quiting the game.
+                    if command[0] == "quit":
+                        break #Breaks out of the loop, and starts the main menu again
+                    elif command[0] == "load":
+                        pass #Call load function
+                    elif command[0] == "save":
+                        pass #Call save function
+                else:
+                    #If the command is meant to be carried out within the game.
+                    execute_command(command)
+                
+                #Check win conditions
+                win = check_win_conditions()
+
+                os.system("pause")
 
 
 

@@ -87,7 +87,22 @@ room_outside = {
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"north": "Hallway"},
     #Items contains a list of the items available in the room on game start.
-    "items": []
+    "items": [],
+    "items default": []
+}
+
+room_null = {
+    "name": "Null",
+
+    "name": "????",
+
+    "description": """You don't recognise this place, you decide to continue looking for the bathroom...
+Although you have no idea where to start...""",
+
+    "exits": {"north": "Null", "south": "Null", "west": "Null", "east": "Null"},
+    
+    "items": [],
+    "items default": []
 }
 
 #Contains all of the rooms in the game with an identifier.
@@ -99,5 +114,6 @@ rooms = {
     "Lounge": room_living_room,
     "Office": room_office,
     "Kitchen": room_kitchen,
-    "Outside": room_outside
+    "Outside": room_outside,
+    "Null": room_null
 }

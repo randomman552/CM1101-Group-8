@@ -16,12 +16,22 @@ are pills inside. They look like Skittles""",
     #'use' atribute tells the player if he/she can use
     #the item and what happens after
     "use": {
-        "conditions": None,
+        #Conditions sets what conditions must be true in order for the item to be usable. 
+        #These conditions are added automatically to the GETs system.
+        "conditions": { 
+            "fuse box": True
+        },
+        #Text is printed when the item is used
         "text": """You shake the bottle and the last two pills fall out.
 You swallow the pills quickly, and get ready to move on.""",
+        #This dictates how the usage of an item will affect the GETs system.
+        "GETs effect":{
+            "power": False
+        },
         "stage effect": 0,
-        "psycosis effect": 0,
-        "remove after use": True
+        "psychosis effect": 0,
+        "remove after use": True,
+        "items": []
     }
     }
 
@@ -67,11 +77,12 @@ item_knife = {
 You can't remember why.""",
 
     "use": {
-        "conditions": None,
+        "conditions": {},
         "text": "You don't want to do that.",
         "stage effect": 0,
-        "psycosis effect": 0,
-        "remove after use": False
+        "psychosis effect": 0,
+        "remove after use": False,
+        "items": []
     }
     }
 
@@ -90,11 +101,12 @@ item_mirror = {
 'Who are you?' """,
 
     "use": {
-        "conditions": None,
+        "conditions": {},
         "text": "You see yourself reflected in the mirror.",
         "stage effect": 0,
-        "psycosis effect": 0,
-        "remove after use": False
+        "psychosis effect": 0,
+        "remove after use": False,
+        "items": [item_knife]
     }
     }
     
@@ -122,11 +134,12 @@ item_coat = {
 You do live in wales after all.""",
 
     "use": {
-        "conditions": None,
+        "conditions": {},
         "text": "You put the coat on, you find its warmth comforting.",
         "stage effect": 0,
-        "psycosis effect": -1,
-        "remove after use": True
+        "psychosis effect": -1,
+        "remove after use": True,
+        "items": []
     }
     }
 

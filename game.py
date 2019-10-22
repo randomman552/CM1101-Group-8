@@ -11,7 +11,8 @@ import pygame
 
 #Initialise inventory as a global variable
 inventory = []
-#Initialise pygame and and its mixer in the main thread.
+#Initialise pygame and and its mixer in the main thread. 
+#Pygame is used in this project, but is only used to play sound
 pygame.init()
 pygame.mixer.init()
 #Start background music, can be stopped at any point by calling BG_Music(False)
@@ -40,7 +41,15 @@ def generate_GETs(items):
                 for condition in item["use"]["conditions"]:
                     #Add the condition to the output, ignore any that have already been added
                     if not condition in output:
-                        output.update({condition: False})
+                        #Detect the type of variable assigned to the GET, and give each GET a default value of that type
+                        item_type = type(item["use"]["conditions"][condition])
+                        if  item_type == bool:
+                            default_value = False
+                        elif item_type == str:
+                            default_value = ""
+                        elif item_type == int or item_type == float:
+                            default_value = 0
+                        output.update({condition: default_value})
     return output
 
 #Global event triggers dictionary
@@ -481,6 +490,7 @@ def main():
         # Main game loop
         win = False
         while not win:
+            #Clear screen at the begining of each loop
             os.system("cls")
             if player["stage"] == 0:
                 #Set values for first stage, then increment stage by 1 to enter it.

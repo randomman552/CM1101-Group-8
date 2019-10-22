@@ -1,6 +1,6 @@
 #OS is used to interact with the command prompt window.
 import os
-#Keyboard is used to check keypresses.
+#Keyboard is used to check keypresses. This is a third party library and can be found here: https://pypi.org/project/keyboard/
 import keyboard
 #Time is used to prevent the keys from being detected constantly, makes menu usable.
 import time
@@ -90,7 +90,7 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
     while True:
         #Main display loop
         os.system("cls")
-        update_display(gamelogo, current_selection, options, "(C) No rights reserved. Using Pygame and Keyboard librarys.")
+        update_display(gamelogo, current_selection, options, "GROUP-8 2019. Using Pygame and Keyboard librarys. George, James, Nick, Radu, Reuben, Sabeehah, and Sean")
         keypressed = key_press()
         if (keypressed == "s"):
             #If s pressed

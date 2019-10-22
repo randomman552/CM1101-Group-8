@@ -1,3 +1,4 @@
+#Pygame is used only to play sounds in this game.
 from pygame import mixer
 mixer.pre_init(44100, 16, 2, 4096)
 mixer.init()

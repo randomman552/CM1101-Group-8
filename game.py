@@ -309,17 +309,17 @@ def execute_use(item_id):
         item_id = items[item_id]
         #Check if its in the players inventory.
         if (item_id in inventory) or (item_id in current_room["items"]):
-            #Open unique prompts
-            if item_id["id"] == "mirror":
-                print_mirror_menu()
-            elif item_id["id"] == "computer":
-                password_prompt()
-            elif item_id["id"] == "picture":
-                print_picture_info()
             #Check if it's usable.
             if "use" in item_id:
                 #Check if item requirements are met
                 if(check_item_conditions(item_id)):
+                    #Open unique prompts
+                    if item_id["id"] == "mirror":
+                        print_mirror_menu()
+                    elif item_id["id"] == "computer":
+                        password_prompt()
+                    elif item_id["id"] == "picture":
+                        print_picture_info()
                     #Print the use text, if it has any
                     if "text" in item_id["use"]:
                         printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
@@ -466,7 +466,10 @@ def password_prompt():
             items["computer"]["description"] = """The comptuer displays something...\nMedical records: \n Lives at home with their family of 4. 
 Slight hint of psychosis when tested by therapist.
 Given some medication for treatment, patient has stored it in the bathroom, dose of 1 pill per day."""
-            print(items["computer"]["description"])
+            typingprint.slow_print(items["computer"]["description"], True)
+            typingprint.slow_print("""Just as you finish reading the information on the screen, you hear a quiet roaring noise which slowly builds in volume.
+As the noise becomes deafening, the office fades from sight. 'I don't know where I am' you realise""")
+            player["stage"] = 2
             GETs["computer used"] = True
         else:
             print("Incorrect Password")
@@ -713,7 +716,7 @@ def check_win_conditions():
     sanity_level = player["sanity"]
     Output = [False, False]
     #If the stage is greater than 5, the player wins
-    if stage == 6:
+    if current_room == rooms["Outside"]:
         Output[0] = True
     #If sanity level is below -5, the player loses
     if sanity_level < -5:
@@ -754,7 +757,7 @@ def main():
                 previous_room = ""
                 player["stage"] += 1
             if player["stage"] == 5:
-                rooms["Bathroom"]["description"] = "You're back in the bathroom, you're not sure how you got here. But somehow you now know you must try to reach the exit."
+                rooms["Bathroom"]["description"] = "You're back in the bathroom, you're not sure how you got here. You know you should take your meds, then get out of here."
                 current_room = rooms["Bathroom"]
                 player["stage"] += 1
             

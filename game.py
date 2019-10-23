@@ -276,7 +276,7 @@ def execute_use(item_id):
                         print_mirror_menu()
                     if item_id["id"] == "computer":
                         password_prompt()
-                    if item_id["id"] == "picture"
+                    if item_id["id"] == "picture":
                         print_picture_info()
                     #If the item needs to be removed after use, remove it from inventory or room.
                     if item_id["use"]["remove after use"]:
@@ -287,7 +287,7 @@ def execute_use(item_id):
     return printstr
 
 def print_picture_info():
-    print("Is that me?... in the scarf?... " + player["reality"]["hair_length"] + player["reality"]["hair_colour"] + " hair."
+    print("Is that me?... in the scarf?... " + player["reality"]["hair_length"] + player["reality"]["hair_colour"] + " hair.")
 
 def print_mirror_menu():
     global player

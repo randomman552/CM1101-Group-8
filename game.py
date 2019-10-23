@@ -448,7 +448,8 @@ def print_list(lists, command):
 def password_prompt():
     
     global player
-    global GETs
+    global items
+    global rooms
     
     Finished = False
     
@@ -460,10 +461,13 @@ def password_prompt():
             print("This Computer is unlocked..........")
             player["stage"] += 1
             Finished = True
+            rooms["Bathroom"]["items"].append(item_medication)
+            items["computer"]["description"] = "Medical records: \n Lives at home with their family of 4. Slight hint of psychosis when tested by therapist"
+            print(items["computer"]["description"])
         else:
             print("Incorrect Password")
             player["sanity"] -= 1
-    GETs["computer used"] = False
+    
     
 def execute_command(command):
     """This function takes a command (a list of words as returned by

@@ -132,12 +132,6 @@ item_writing_on_wall = {
     figure this out, might be a name...""",
 
     "use": {
-<<<<<<< HEAD
-=======
-        "conditions":{
-            "magnifying glass": True,
-        }, 
->>>>>>> 739fd12d6624cbf3aa681a21d3b8fd6b55d88e77
 
         "text":
         """Those letters are jumbled. Can't be too hard...

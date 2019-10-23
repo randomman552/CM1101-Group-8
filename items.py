@@ -538,6 +538,7 @@ item_computer = {
 
         "items":[]
         }
+    "password" : "",
     }
 
 item_knife = {

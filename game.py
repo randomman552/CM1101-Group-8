@@ -272,6 +272,10 @@ def execute_use(item_id):
                     #Print the use text.
                     printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
                     apply_item_effects(item_id)
+                    if item_id == "mirror":
+                        print_mirror_menu()
+                    if item_id == "computer":
+                        password_prompt()
                     #If the item needs to be removed after use, remove it from inventory or room.
                     if item_id["use"]["remove after use"]:
                         if item_id in inventory:
@@ -280,6 +284,112 @@ def execute_use(item_id):
                             current_room["items"].remove(item_id)
     return printstr
 
+def print_mirror_menu():
+    global player
+    Finished = False
+    
+    while Finished != True:
+        print("You look into the mirror. It's magical presence enraptures you...")
+        print("What would you like to change?")
+        print(" [1] Height")
+        print(" [2] Eye Colour")
+        print(" [3] Hair Colour")
+        print(" [4] Hair Length")
+        print(" [5] Gender")
+        print(" [6] Name")
+        print("")
+        print(" [7] Show Appearance")
+        print(" [8] Exit")
+        i = str(input())
+        s = ""
+        for ch in i:
+            if ch.isdigit() == True:
+                s = s + ch
+        if s == "1":
+            print_list(player["options"]["height"], "height")
+            check_appearance()
+        elif: s == "2":
+            print_list(player["options"]["hair_colour"], "hair_colour")
+            check_appearance()
+        elif: s == "3":
+            print_list(player["options"]["hair_length"], "hair_length")
+            check_appearance()
+        elif: s == "4":
+            print_list(player["options"]["eye_colour"], "eye_colour")
+            check_appearance()
+        elif: s == "5":
+            print_list(player["options"]["gender"], "gender")
+            check_appearance()
+        elif: s == "6":
+            print("Please enter your name: ")
+            name = str(input())
+            player["description"]["name"] = name
+        elif: s == "7":
+            print_appearance()
+        elif: s == "8":
+            Finished = True
+        
+def print_appearance():
+    global player
+    print("Your name is " + player["description"]["name"] + " and you are " + player["description"]["height"] + ". You have ", \
+    + player["description"]["hair_length"] + " " + player["description"]["hair_colour"] + " hair with " + player["description"]["eye_colour"], \
+    + " eyes.")
+    
+def check_appearance():
+    global player
+    counter = 0
+    
+        if player["description"]["name"] == player["reality"]["name"]:
+            counter += 1
+        if player["description"]["height"] == player["reality"]["height"]:
+            counter += 1
+        if player["description"]["hair_colour"] == player["reality"]["hair_colour"]:
+            counter += 1
+        if player["description"]["hair_length"] == player["reality"]["hair_length"]:
+            counter += 1
+        if player["description"]["eye_colour"] == player["reality"]["eye_colour"]:
+            counter += 1
+        if player["description"]["gender"] == player["reality"]["gender"]:
+            counter += 1    
+        
+        if counter == 6:
+            Print("Congratulations you know who you are")
+        
+
+def print_list(lists, command):
+    global player
+    counter = 0
+    for item in lists:
+        print("[" + (counter + 1) + "] " + item)
+        counter += 1
+        
+    print("[" + (counter + 1) + "] keep it the same")
+    i = str(input())
+    s = ""
+    for ch in i:
+        if ch.isdigit() == True:
+            s = s + ch
+        
+    if s != str(counter):
+        player["description"][command] = lists(s)
+    
+def password_prompt():
+    
+    global items
+    
+    Finished = False
+    
+    while Finished != True:
+        print("This computer is locked. Please enter a password: ")
+        s = str(input())
+    
+        if s == items["computer"]["password"]:
+            print("This Computer is unlocked..........")
+            Finished = True
+        else:
+            print("Incorrect Password")
+            #changes psychosis level
+    
 def execute_command(command):
     """This function takes a command (a list of words as returned by
     normalise_input) and, depending on the type of action (the first word of

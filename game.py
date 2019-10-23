@@ -504,6 +504,8 @@ def print_exits(exits):
         for direction in exits:
             if is_valid_exit(exits,direction):
                 printstr = printstr + return_exit(direction,exit_leads_to(exits, direction)["name"])
+    if printstr == "You can " + ANSIstyles.YELLOW +  "GO:\n" + ANSIstyles.END:
+        printstr = ANSIstyles.RED + "There is nowhere you can go." + ANSIstyles.END + "\n"
     typingprint.slow_print(printstr, type_print)
 
 def print_take_item(items):

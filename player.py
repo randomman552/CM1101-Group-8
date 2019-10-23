@@ -26,7 +26,20 @@ playerdefault = {
     "psychosis meter": 0,
     "inventory": [],
     "description": {
-
+        "name": ""
+        "height": ""
+        "eye_colour": ""
+        "hair_colour": ""
+        "hair_length": ""
+        "gender": "
+    },
+    "options": {
+        "name": ""
+        "height": ["160cm", "170cm", "180cm"]
+        "eye_colour": ["Blue", "Hazel", "Green"]
+        "hair_colour": ["Brown", "Black", "Red", "Blonde"]
+        "hair_length": ["Short", "Medium", "Long"]
+        "gender": ["Male", "Female"]
     },
     "memory": {
         "name": "Bob",

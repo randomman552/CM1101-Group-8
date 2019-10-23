@@ -6,6 +6,7 @@ exit_sound = mixer.Sound(file="Sounds/exit_sound.wav")
 pickup_sound = mixer.Sound(file="Sounds/drop_sound.wav")
 drop_sound = mixer.Sound(file="Sounds/drop_sound.wav")
 use_sound = mixer.Sound(file="Sounds/drop_sound.wav")
+inspect_sound = mixer.Sound(file="Sounds/drop_sound.wav")
 mixer.music.load("Sounds/BG_Music.wav")
 
 def play_exit_sound():
@@ -19,6 +20,10 @@ def play_pickup_sound():
 def play_drop_sound():
     if not mixer.get_busy():
         drop_sound.play()
+
+def play_inspect_sound():
+    if not mixer.get_busy():
+        inspect_sound.play()
 
 def play_use_sound():
     if not mixer.get_busy():

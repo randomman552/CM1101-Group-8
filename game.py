@@ -41,17 +41,19 @@ def generate_GETs_items(items):
             if "conditions" in item["use"]:
                 #For each condition
                 for condition in item["use"]["conditions"]:
-                    #Add the condition to the output, ignore any that have already been added
-                    if not condition in output:
-                        #Detect the type of variable assigned to the GET, and give each GET a default value of that type
-                        item_type = type(item["use"]["conditions"][condition])
-                        if  item_type == bool:
-                            default_value = False
-                        elif item_type == str:
-                            default_value = ""
-                        elif item_type == int or item_type == float:
-                            default_value = 0
-                        output.update({condition: default_value})
+                    #Check that the condition is not an item requirement
+                    if not condition == "items":
+                        #Add the condition to the output, ignore any that have already been added
+                        if not condition in output:
+                            #Detect the type of variable assigned to the GET, and give each GET a default value of that type
+                            item_type = type(item["use"]["conditions"][condition])
+                            if  item_type == bool:
+                                default_value = False
+                            elif item_type == str:
+                                default_value = ""
+                            elif item_type == int or item_type == float:
+                                default_value = 0
+                            output.update({condition: default_value})
     return output
 
 def generate_GETs_rooms(rooms):
@@ -221,8 +223,10 @@ def execute_drop(item_id):
 
 def deep_inspect(item_id):
     """This function provides further information about an item if certain items are present in the players inventory"""
-    #if item_magnifying_glass in inventory:
-        #print(item_id["inspection"])
+    if GETs["magnifier"] or item_magnifying_glass in inventory:
+        return(item_id["inspection"])
+    else:
+        return ""
 
 def execute_inspect(item_id):
     """This function takes an item_id as an argument, then prints the description of that item.
@@ -238,7 +242,7 @@ def execute_inspect(item_id):
         if item_id in inventory or item_id in current_room["items"]:
             #Print item description
             printstr = item_id["id"] + ":\n" + item_id["description"]
-            #deep_inspect(item_id) Can be readded once items are fully finished
+            printstr += deep_inspect(item_id)
     return printstr
 
 def execute_remember(remembering = ""):
@@ -263,12 +267,18 @@ def execute_remember(remembering = ""):
     return printstr
 
 def check_item_conditions(item_id):
-    """Checks if item GETs requirements are met"""
+    """Checks if item requirements are met"""
     output = True
     if "id" in item_id:
         if "conditions" in item_id["use"]:
             for condition in item_id["use"]["conditions"]:
-                if not GETs[condition] == item_id["use"]["conditions"][condition]:
+                if condition == "items":
+                    for item in item_id["use"]["conditions"]["items"]:
+                        if not(item in inventory or item in current_room["items"]):
+                            return False
+                        else:
+                            inventory.remove(item)
+                elif not GETs[condition] == item_id["use"]["conditions"][condition]:
                     return False
     elif item_id["name"] in rooms:
         if "conditions" in item_id:
@@ -302,19 +312,24 @@ def execute_use(item_id):
         item_id = items[item_id]
         #Check if its in the players inventory.
         if (item_id in inventory) or (item_id in current_room["items"]):
+            #Open unique prompts
+            if item_id["id"] == "mirror":
+                print_mirror_menu()
+            elif item_id["id"] == "computer":
+                password_prompt()
+            elif item_id["id"] == "picture":
+                print_picture_info()
             #Check if it's usable.
             if "use" in item_id:
                 #Check if item requirements are met
                 if(check_item_conditions(item_id)):
-                    #Print the use text.
-                    printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
+                    #Print the use text, if it has any
+                    if "text" in item_id["use"]:
+                        printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
                     apply_item_effects(item_id)
-                    if item_id["id"] == "mirror":
-                        print_mirror_menu()
-                    if item_id["id"] == "computer":
-                        password_prompt()
-                    if item_id["id"] == "picture":
-                        print_picture_info()
+                    #If the item contains a function, call it.
+                    if "function" in item_id["use"]:
+                        item_id["use"]["function"]()
                     #If the item needs to be removed after use, remove it from inventory or room.
                     if item_id["use"]["remove after use"]:
                         if item_id in inventory:
@@ -324,7 +339,7 @@ def execute_use(item_id):
     return printstr
 
 def print_picture_info():
-    print("Is that me?... in the scarf?... " + player["reality"]["hair_length"] + player["reality"]["hair_colour"] + " hair.")
+    print("Is that me?... in the scarf?... " + player["reality"]["hair_length"] + ", " + player["reality"]["hair_colour"] + " hair.")
 
 def print_mirror_menu():
     global player
@@ -398,8 +413,6 @@ def check_appearance():
         counter += 1
     if player["description"]["gender"] == player["reality"]["gender"]:
         counter += 1    
-    print(str(counter))
-    os.system("pause")
     if counter == 6:
         typingprint.slow_print("Congratulations you know who you are. \nYou go the office key!!!", True)
         inventory.append(item_key)
@@ -425,7 +438,7 @@ def print_list(lists, command):
     
 def password_prompt():
     
-    global items
+    global player
     
     Finished = False
     
@@ -435,10 +448,11 @@ def password_prompt():
     
         if s == items["computer"]["password"]:
             print("This Computer is unlocked..........")
+            player["stage"] += 1
             Finished = True
         else:
             print("Incorrect Password")
-            #changes psychosis level
+            player["psychosis meter"] += 1
     
 def execute_command(command):
     """This function takes a command (a list of words as returned by
@@ -606,6 +620,12 @@ def move(exits, direction):
     sound.play_exit_sound()
     return rooms[exits[direction]]
 
+def reset_player():
+    output = {}
+    for item in playerdefault:
+        output.update({item:playerdefault[item]})
+    return output
+
 def reset_game():
     global current_room
     global previous_room
@@ -616,9 +636,8 @@ def reset_game():
     #Reset location
     current_room = rooms["Bedroom"]
     previous_room = ""
-    #Reset player dictionary, needs to be remade to be done like the rooms.
-    player = playerdefault
-    inventory = player["inventory"]
+    #Reset player dictionary.
+    player = reset_player()
     #Clear rooms of all items and add the default items for each room to that room.
     #This is done like this rather than assigning the default items value to items to prevent the editing of the default values.
     #This allows for the restarting of the game without restarting the whole program.
@@ -663,6 +682,8 @@ def check_win_conditions():
     #Get the current stage from player dictionary
     stage = player["stage"]
     Output = False
+    if stage > 4:
+        Output = True
     return Output
 
 # This is the entry point of our program
@@ -684,12 +705,12 @@ def main():
         win = False
         while not win:
             #Clear screen at the begining of each loop
-            
             if os.name == 'nt':
                 os.system("cls")
-
-            if player["stage"] == 0:
-                #Set values for first stage, then increment stage by 1 to enter it.
+            global current_room
+            global player
+            if player["stage"] == 2:
+                current_room = rooms["Null"]
                 player["stage"] += 1
             else:
                 global previous_room

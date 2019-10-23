@@ -242,7 +242,7 @@ def execute_inspect(item_id):
         if item_id in inventory or item_id in current_room["items"]:
             #Print item description
             printstr = item_id["id"] + ":\n" + item_id["description"]
-            printstr += deep_inspect(item_id)
+            printstr += "\n" + deep_inspect(item_id)
     return printstr
 
 def execute_remember(remembering = ""):

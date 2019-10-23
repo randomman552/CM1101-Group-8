@@ -102,7 +102,7 @@ item_writing_on_wall = {
 
             },
         
-        "stage effect": 1,
+        "stage effect": 0,
         
         "sanity effect": 0,
         
@@ -140,7 +140,7 @@ You take the candle and get ready to move on.""",
             "candle": True
         },
         
-        "stage effect": 1,
+        "stage effect": 0,
         
         "sanity effect": 0,
         
@@ -186,7 +186,7 @@ item_clock = {
 
         },
         
-        "stage effect": 1,
+        "stage effect": 0,
         
         "sanity effect": 0,
         
@@ -287,7 +287,7 @@ item_coat = {
             "coat": True
         },
         
-        "stage effect": 1,
+        "stage effect": 0,
         
         "sanity effect": 1,
         

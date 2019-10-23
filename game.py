@@ -410,7 +410,7 @@ def check_appearance():
     global player
     counter = 0
     
-    if player["description"]["name"] == player["reality"]["name"]:
+    if player["description"]["name"].lower() == player["reality"]["name"].lower():
         counter += 1
     if player["description"]["height"] == player["reality"]["height"]:
         counter += 1
@@ -450,6 +450,7 @@ def password_prompt():
     global player
     global items
     global rooms
+    global GETs
     
     Finished = False
     
@@ -462,11 +463,15 @@ def password_prompt():
             player["stage"] += 1
             Finished = True
             rooms["Bathroom"]["items"].append(item_medication)
-            items["computer"]["description"] = "Medical records: \n Lives at home with their family of 4. Slight hint of psychosis when tested by therapist"
+            items["computer"]["description"] = """The comptuer displays something...\nMedical records: \n Lives at home with their family of 4. 
+Slight hint of psychosis when tested by therapist.
+Given some medication for treatment, patient has stored it in the bathroom, dose of 1 pill per day."""
             print(items["computer"]["description"])
+            GETs["computer used"] = True
         else:
             print("Incorrect Password")
             player["sanity"] -= 1
+            break
     
     
 def execute_command(command):
@@ -708,7 +713,7 @@ def check_win_conditions():
     sanity_level = player["sanity"]
     Output = [False, False]
     #If the stage is greater than 5, the player wins
-    if stage == 5:
+    if stage == 6:
         Output[0] = True
     #If sanity level is below -5, the player loses
     if sanity_level < -5:
@@ -746,6 +751,7 @@ def main():
             #Changes between each stage of the game are made here
             if player["stage"] >= 2 and player["stage"] < 5:
                 current_room = rooms["Null"]
+                previous_room = ""
                 player["stage"] += 1
             if player["stage"] == 5:
                 rooms["Bathroom"]["description"] = "You're back in the bathroom, you're not sure how you got here. But somehow you now know you must try to reach the exit."

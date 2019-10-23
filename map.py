@@ -8,7 +8,7 @@ room_bedroom = {
     """In a large cozy room with not too many items you
     only find a bed, a nightstand and a wardrobe. There is
     a big window near your bed. A dim light comes from
-    outsidebut soon it dissappears.""",
+    outside but soon it disappears.""",
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"north": "Bathroom", "west": "Hallway"},
     #Items contains a list of the items available in the room on game start.
@@ -95,7 +95,7 @@ room_outside = {
     "name": "Outside",
     #Description of the room, this is shown on screen when the player is in the room.   
     "description":
-    """Finally I'm out! On a field. The house dissappeared.""",
+    """You are out on a field. The house has disappeared.""",
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"north": "Hallway"},
     #Items contains a list of the items available in the room on game start.

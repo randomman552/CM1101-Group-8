@@ -32,7 +32,7 @@ player = {"stage": 0,
         "gender": "???"
     },
     "reality": {
-        "name": "Sam",
+        "name": "sam",
         "height": "170cm",
         "eye_colour": "Blue",
         "hair_colour": "Brown",

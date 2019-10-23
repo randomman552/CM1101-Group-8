@@ -67,4 +67,3 @@ def Name_Shuffle(name):
 # Start game in the bedroom
 current_room = rooms["Bedroom"]
 previous_room = ""
-inventory = []

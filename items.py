@@ -114,7 +114,7 @@ item_key = {
         
         "remove after use": True,
         
-        #"items": [item_mirror["items"][item_medication]
+        "items": [item_medication]
         }
     }
 
@@ -134,7 +134,9 @@ item_writing_on_wall = {
     figure this out, might be a name...""",
 
     "use": {
-        "conditions":{ True }, #item_magnifying_glass in inventory
+        "conditions":{
+            "magnifying glass": True,
+        }, 
 
         "text":
         """Those letters are jumbled. Can't be too hard...

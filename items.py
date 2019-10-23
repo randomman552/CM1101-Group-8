@@ -17,7 +17,7 @@ item_medication = {
     #Description can be read with inspect command
     "description":
     """A small, white jar with my name on it. There
-    are pills inside. They look like Skittles""",
+are pills inside. They look like Skittles""",
     #Inspection can be made with other items
     "inspection":
     "Nothing weird about them",
@@ -516,7 +516,7 @@ item_computer = {
             "computer used": True
         },
 
-        "stage effect": 2,
+        "stage effect": 1,
 
         "remove after use": True,
 

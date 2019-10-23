@@ -159,10 +159,16 @@ def is_valid_exit(exits, chosen_exit):
     It returns True if the exit is valid, and False otherwise. Assume that
     the name of the exit has been normalised by the function normalise_input().
     For example:"""
-    if check_item_conditions(exit_leads_to(exits, chosen_exit)):
-        return chosen_exit in exits
-    else:
-        return None
+    #Work out what the next room is
+    next_room = exit_leads_to(exits, chosen_exit)
+    #If the exit exists
+    if not next_room == None:
+        #Check the conditions of the room
+        if check_item_conditions(next_room):
+            #If the conditions are met, return the corresponding exit
+            return chosen_exit in exits
+    #If none of the conditions above are met, return None
+    return None
     
 
 
@@ -222,11 +228,16 @@ def execute_drop(item_id):
     return printstr
 
 def deep_inspect(item_id):
-    """This function provides further information about an item if certain items are present in the players inventory"""
+    """This function provides further information about an item if certain items are present in the players inventory
+    and if it has an inspect atribute."""
+    #If the magnifying glass has been collected or used.
     if GETs["magnifier"] or item_magnifying_glass in inventory:
-        return(item_id["inspection"])
-    else:
-        return ""
+        #If the item has an inspection atribute.
+        if "inspection" in item_id:
+            #return in inspection string
+            return("Looking with the magnifying glass:\n" + item_id["inspection"])
+    #Return an empty string to prevent program crashes
+    return ""
 
 def execute_inspect(item_id):
     """This function takes an item_id as an argument, then prints the description of that item.
@@ -245,7 +256,7 @@ def execute_inspect(item_id):
             printstr += "\n" + deep_inspect(item_id)
     return printstr
 
-def check_item_conditions(item_id, delete_after_check = False):
+def check_item_conditions(item_id):
     """Checks if item requirements are met"""
     output = True
     if "id" in item_id:
@@ -253,11 +264,7 @@ def check_item_conditions(item_id, delete_after_check = False):
             for condition in item_id["use"]["conditions"]:
                 if condition == "items":
                     for item in item_id["use"]["conditions"]["items"]:
-                        if item in inventory and delete_after_check:
-                            inventory.remove(item)
-                        elif item in current_room["items"] and delete_after_check:
-                            current_room["items"].remove(item)
-                        elif delete_after_check:
+                        if not ((item in inventory) or (item in current_room["items"])):
                             return False
                 elif not GETs[condition] == item_id["use"]["conditions"][condition]:
                     return False
@@ -275,8 +282,8 @@ def apply_item_effects(item_id):
     use = item_id["use"]
     if "stage effect" in use:
         player["stage"] = use["stage effect"]
-    if "psychosis effect" in use:
-        player["sanity"] = player ["sanity"] + use["psychosis effect"]
+    if "sanity effect" in use:
+        player["sanity"] = player ["sanity"] + use["sanity effect"]
     if "items" in use:
         for item in use["items"]:
             inventory.append(item)
@@ -303,7 +310,7 @@ def execute_use(item_id):
             #Check if it's usable.
             if "use" in item_id:
                 #Check if item requirements are met
-                if(check_item_conditions(item_id, True)):
+                if(check_item_conditions(item_id)):
                     #Print the use text, if it has any
                     if "text" in item_id["use"]:
                         printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
@@ -311,6 +318,14 @@ def execute_use(item_id):
                     #If the item contains a function, call it.
                     if "function" in item_id["use"]:
                         item_id["use"]["function"]()
+                    #If the item had item requirements, remove those items from the inventory.
+                    if "conditions" in item_id["use"]:
+                        if "items" in item_id["use"]["conditions"]:
+                            for item in item_id["use"]["conditions"]["items"]:
+                                if item in inventory:
+                                    inventory.remove(item)
+                                else:
+                                    current_room["items"].remove(item)
                     #If the item needs to be removed after use, remove it from inventory or room.
                     if item_id["use"]["remove after use"]:
                         if item_id in inventory:
@@ -544,8 +559,10 @@ def exit_leads_to(exits, direction):
     """This function takes a dictionary of exits and a direction (a particular
     exit taken from this dictionary). It returns the name of the room into which
     this exit leads. For example:"""
-
-    return rooms[exits[direction]]
+    try:
+        return rooms[exits[direction]]
+    except KeyError:
+        return None
 
 def print_menu(exits, room_items, inv_items):
     """This function displays the menu of available actions to the player. The

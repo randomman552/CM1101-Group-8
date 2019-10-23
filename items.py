@@ -156,40 +156,6 @@ item_writing_on_wall = {
         }
     }
 
-item_matches = {
-    "id": "matches",
-
-    "name": "a box of matches",
-
-    "take": True,
-
-    "description":
-    """Finally... A light source. I just
-    need a candle or some paper.""",
-
-    "inspection":
-    """Just a box of matches.""",
-    "use": {
-        "conditions": { 
-            
-        },
-        "text":
-        """You light the canlde using the matches""",
-
-        "GETs effect": {
-                "matches": True
-            },
-        
-        "stage effect": 1,
-        
-        "psychosis effect": 0,
-        
-        "remove after use": True,
-        
-        "items":[]
-        }
-    }
-
 item_candle = {
     "id": "candle",
 
@@ -198,14 +164,15 @@ item_candle = {
     "take": True,
 
     "description":
-    """A wax candle. Could be a light source.""",
+    """A wax candle. Could be a light source.
+There are some matches next to it.""",
 
     "inspection":
-    """Just a wax candle""",
+    """Just a normal wax candle""",
 
     "use": {
         "conditions": { 
-            "matches": True
+
         },
 
         "text":
@@ -365,6 +332,22 @@ item_coat = {
         }
     }
 
+item_fuse = {
+    "id": "fuse",
+
+    "name": "a fuse",
+
+    "take": True,
+
+    "weight": 0,
+
+    "description":
+    """A fuse… Who removed it?""",
+
+    "inspection":
+    """I need to put it back."""
+    }
+
 item_fusebox = {
     "id": "fusebox",
     
@@ -379,7 +362,9 @@ item_fusebox = {
     """I need a fuse to power up the house""",
     
     "use": {
-          #item_fuse in inventory
+        "conditions": {
+            "items":[item_fuse]
+        },
         
         "text":
             """You open it and push back in its place.
@@ -446,22 +431,6 @@ item_picture = {
 
         "items":[]
         }
-    }
-
-item_fuse = {
-    "id": "fuse",
-
-    "name": "a fuse",
-
-    "take": True,
-
-    "weight": 0,
-
-    "description":
-    """A fuse… Who removed it?""",
-
-    "inspection":
-    """I need to put it back."""
     }
 
 item_wall_markings = {

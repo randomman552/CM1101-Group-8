@@ -25,10 +25,9 @@ room_bathroom = {
     #Description of the room, this is shown on screen when the player is in the room.   
     "description":
     """As you open the door you see a dim light. It's just
-a reflection. You can only approach the mirror as you
+a reflection on the mirror. You can only approach the mirror as you
 cannot see anything else... .The mirror is placed on
-a drawer that you cannot open. There is a black window
-near the sink.""",
+a drawer that you cannot open.""",
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"south": "Bedroom"},
     #Items contains a list of the items available in the room on game start.
@@ -64,7 +63,7 @@ room_living_room = {
     """It looks like nothing you saw untill now. You can see your reflection in
 the marble floor. Near an armchair there is a table with a fruit bowl on it.
 The fruits are fresh but the air has a rotten smell.
-You can see the office door, but it's locked and until the power is back on there is no reason to go in there.""",
+You can see the office door, but it's locked.""",
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"east": "Hallway", "north": "Office"},
     #Items contains a list of the items available in the room on game start.
@@ -80,15 +79,15 @@ room_office = {
     "name": "Office",
     #Description of the room, this is shown on screen when the player is in the room.   
     "description":
-    """A short, cold breeze washes the rotten smell away. You can see a blue light
-on a computer screen. The window is oppened but you see nothing but a sea shore filled with weird objects.""",
+    """Using the key you enter the office, on the desk at the far end you see a computer.
+You will need to get the power back on before using it.""",
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"south": "Lounge"},
     #Items contains a list of the items available in the room on game start.
     "items": [],
     "items default": [item_book, item_computer, item_paper],
     "conditions":{
-        "office open": True
+        "items": [item_key]
     }
 }
 
@@ -131,7 +130,8 @@ room_null = {
     "name": "????",
 
     "description": """You don't recognise this place, you decide to continue looking for the bathroom...
-Although you have no idea where to start...""",
+Although you have no idea where to start...
+Dark shapes shift at the edges of your vision, you are afraid.""",
 
     "exits": {"north": "Null", "south": "Null", "west": "Null", "east": "Null"},
     

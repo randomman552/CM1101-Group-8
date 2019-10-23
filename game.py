@@ -448,6 +448,7 @@ def print_list(lists, command):
 def password_prompt():
     
     global player
+    global GETs
     
     Finished = False
     
@@ -462,6 +463,7 @@ def password_prompt():
         else:
             print("Incorrect Password")
             player["sanity"] -= 1
+    GETs["computer used"] = False
     
 def execute_command(command):
     """This function takes a command (a list of words as returned by

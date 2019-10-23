@@ -1,10 +1,10 @@
 
 def caesar_cipher(text, shift):
-  characters = [char for char in text]
-  return ''.join(list(map(lambda character: 
+    text = text.lower()
+    characters = [char for char in text]
+    return ''.join(list(map(lambda character: 
     ' ' if ord(character) == 32 else chr((ord(character) + shift - 97) % 26 + 97),
     characters)))
-
 
 item_medication = {
     #id of the room, is used as its name
@@ -35,12 +35,12 @@ item_medication = {
         You swallow the pills quickly, and get ready to move on.""",
         #This dictates how the usage of an item will affect the GETs system.
         "GETs effect":{
-            "door unlocked": True
+            "meds used": True
         },
         
         "stage effect": 0,
         
-        "psychosis effect": 0,
+        "sanity effect": 0,
         
         "remove after use": True,
         
@@ -67,7 +67,7 @@ item_mirror = {
         
         "stage effect": 1,
         
-        "psychosis effect": 0,
+        "sanity effect": 0,
         
         "remove after use": False,
         
@@ -96,7 +96,7 @@ item_writing_on_wall = {
             "magnifier": True
         },
         "text":
-        """Those letters are jumbled. Can't be too hard... """ + caesar_cipher("Sam", 1) ,
+        """Those letters are jumbled. Can't be too hard... """ + caesar_cipher("sam", 1) ,
 
         "GETs effect": {
 
@@ -104,7 +104,7 @@ item_writing_on_wall = {
         
         "stage effect": 1,
         
-        "psychosis effect": 0,
+        "sanity effect": 0,
         
         "remove after use": False,
         
@@ -142,7 +142,7 @@ You take the candle and get ready to move on.""",
         
         "stage effect": 1,
         
-        "psychosis effect": 0,
+        "sanity effect": 0,
         
         "remove after use": True,
         
@@ -188,7 +188,7 @@ item_clock = {
         
         "stage effect": 1,
         
-        "psychosis effect": 0,
+        "sanity effect": 0,
         
         "remove after use": False,
         
@@ -255,7 +255,7 @@ It's more familiar than I care to admit, Perhaps it's a clue?""",
 
         "stage effect": 0,
 
-        "psychosis effect": 0,
+        "sanity effect": 0,
 
         "remove after use": True,
 
@@ -280,20 +280,37 @@ item_coat = {
     """Nothing in the pokets, I feel like something is missing.""",
 
     "use": {
-         
-        
+
         "text": "You put the coat on, you find its warmth comforting.",
         
-        "GETs effect": {"power": False},
+        "GETs effect": {
+            "coat": True
+        },
         
         "stage effect": 1,
         
-        "psychosis effect": -1,
+        "sanity effect": 1,
         
         "remove after use": True,
 
         "items":[]
         }
+    }
+
+item_fusebox = {
+    "id": "fusebox",
+    
+    "name": "a fusebox",
+    
+    "take": False,
+    
+    "description":
+    """A red fusebox on the wall... Looking at the inside you see that one of the fuses is missing
+You make a mental note to find it...""",
+        
+    "inspection":
+    """You notice the fusebox looks very old, it's even rusting in places...
+That cant be good..."""
     }
 
 item_fuse = {
@@ -306,43 +323,29 @@ item_fuse = {
     "weight": 0,
 
     "description":
-    """A fuse… Who removed it?""",
+    """A fuse... Perhaps there is somewhere to put it...""",
 
     "inspection":
-    """I need to put it back."""
-    }
+    """The fuse is rectangular in shape, exposed contacts can be seen at either end.""",
 
-item_fusebox = {
-    "id": "fusebox",
-    
-    "name": "a fusebox",
-    
-    "take": False,
-    
-    "description":
-    """A red fusebox on the wall...""",
-        
-    "inspection":
-    """I need a fuse to power up the house""",
-    
     "use": {
         "conditions": {
-            "items":[item_fuse]
+            "items":[item_fusebox]
         },
         
         "text":
-            """You open it and push back in its place.
-        The lights are now on. You can get rid of that candle.
-        Everything is more clear now, but... you cannot see
-        anything that might help you.""",
+            """You pry open the fusebox with your finger nails and push the fuse you found in the living room into the one empty slot.
+The lights suddenly flicker back on, you won't need this candle anymore.""",
 
-        "GETs effect": {"computer on": True},
+        "GETs effect": {
+            "computer on": True
+        },
         
         "stage effect": 0,
         
-        "psychosis effect": 0,
+        "sanity effect": 0,
         
-        "remove after use": False,
+        "remove after use": True,
 
         "items":[]
         }
@@ -392,7 +395,7 @@ item_picture = {
 
         "stage effect": 0,
         
-        "psychosis effect": 0,
+        "sanity effect": 0,
 
         "remove after use": False,
 
@@ -413,28 +416,7 @@ item_key = {
         "A small key. I wonder what it opens...",
         
     "inspection":
-        "It's just a small key",
-    
-    "use": {
-        "conditions": { 
-            "items": [item_picture],
-            "comptuer on": True
-        },
-
-        "text":
-        """You open the office door, expecting
-        for answers but you can only see a blue light
-        on an old desk.""",
-        
-        "GETs effect":{
-            "office open": True
-        },
-        "psychosis effect": -1,
-        
-        "remove after use": True,
-        
-        "items": [item_medication]
-        }
+        "It's just a small key"
     }
 
 item_wall_markings = {
@@ -462,30 +444,14 @@ item_wall_markings = {
 item_magnifying_glass = {
     "id": "magnifier",
 
-    "name": "a magnifier",
+    "name": "a magnifying glass",
     "take": True,
 
     "weight": 0,
 
     "description":
     """I might be able to use this help with inspecting things...""",
-
-    "use": {
-        "text":
-        "Now I should be able to inspect things better...",
-
-        "GETs effect": {
-            "magnifier": True
-        },
-
-        "stage effect": 0,
-        
-        "psychosis effect": 0,
-
-        "remove after use": True,
-
-        "items":[]
-        }
+    "inspection": "You can't use a magnifying glass to look at itself!!!"
     }
 
 item_book = {
@@ -519,7 +485,7 @@ item_paper = {
     """A scrap of paper...why does it also looks old?
     Everything seems to be a memmory.""",
 
-    "inspections":
+    "inspection":
     """On the scrap is written "Often will I spin a tale,
     never will I charge a fee. I'll amuse you an entire
     eve, but, alas you wont remember me. What am I?"
@@ -547,16 +513,20 @@ item_computer = {
         "text": """ """,
 
         "GETs effect": {
-            
+            "computer used": True
         },
 
         "stage effect": 2,
 
-        "psychosis effect": 1,
+        "remove after use": True,
+
+        "sanity effect": 1,
 
         "items":[]
         },
-    "password" : "dream445",
+    #The answer to the riddle on the paper is "dream"
+    #The answer to the number sequence puzzle in the book is 445
+    "password" : "dream445" 
     }
 
 item_knife = {
@@ -570,7 +540,6 @@ item_knife = {
 
     "description":
     """A kitchen knife. It's very, very sharp.""",
-    
 
     "use": {
          
@@ -579,11 +548,23 @@ item_knife = {
 
         "GETs effect": {},
         
-        "psychosis effect": -6,
+        "sanity effect": -6,
         
         "remove after use": False,
         }
     }
+
+item_empty_bowl = {
+    "id": "bowl",
+
+    "name": "an empty bowl",
+
+    "take": True,
+
+    "description": "That was some top notch food.",
+
+    "inspection": "You can see scratches etched into the bottom of the bowl from years of use."
+}
 
 item_bowl = {
     "id": "bowl",
@@ -600,18 +581,17 @@ item_bowl = {
     """It feels like a memmory.""",
 
     "use": {
-         
 
         "text":
-        """It also tastes like my moms. Weird.""",
+        """It also tastes like my mum's. Weird.""",
 
         "GETs effect": {},
         
-        "psychosis effect": 1,
+        "sanity effect": 1,
         
         "remove after use": True,
 
-        "items":[]
+        "items":[item_empty_bowl]
         }
     }
 
@@ -623,11 +603,11 @@ item_painting = {
     "take": False,
 
     "description":
-    """The painting reads "Retro Bazinger!".
-    It looks like someone was a fan of computer games.""",
+    """The painting reads "Retro Bazinga!".
+It looks like someone was a fan of computer games.""",
 
     "inspection":
-    """Nothing more than a comic page in a frame."""
+    """The name 'Kirill' is etched onto the frame in very small writing."""
     }
   
 item_door = {
@@ -643,7 +623,7 @@ item_door = {
         
     "use": {
         "conditions":{
-            "door unlocked": True
+            "meds used": True
         },
         "text": 
         """You open the door and see nothing. You can't control
@@ -654,7 +634,7 @@ item_door = {
             "outside open": True
         },
         
-        "psychosis effect": 0,
+        "sanity effect": 0,
         
         "remove after use": True,
 

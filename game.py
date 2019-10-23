@@ -12,7 +12,7 @@ from pygame import mixer
 from save import *
 
 #Initialise inventory as a global variable
-inventory = []
+inventory = player["inventory"]
 #Initialise pygame and and its mixer in the main thread. 
 #Pygame is used in this project, but is only used to play sound
 pygame.init()
@@ -245,7 +245,7 @@ def execute_inspect(item_id):
             printstr += "\n" + deep_inspect(item_id)
     return printstr
 
-def check_item_conditions(item_id):
+def check_item_conditions(item_id, delete_after_check = False):
     """Checks if item requirements are met"""
     output = True
     if "id" in item_id:
@@ -253,13 +253,12 @@ def check_item_conditions(item_id):
             for condition in item_id["use"]["conditions"]:
                 if condition == "items":
                     for item in item_id["use"]["conditions"]["items"]:
-                        if not(item in inventory or item in current_room["items"]):
+                        if item in inventory and delete_after_check:
+                            inventory.remove(item)
+                        elif item in current_room["items"] and delete_after_check:
+                            current_room["items"].remove(item)
+                        elif delete_after_check:
                             return False
-                        else:
-                            try:
-                                inventory.remove(item)
-                            except ValueError:
-                                pass
                 elif not GETs[condition] == item_id["use"]["conditions"][condition]:
                     return False
     elif item_id["name"] in rooms:
@@ -304,7 +303,7 @@ def execute_use(item_id):
             #Check if it's usable.
             if "use" in item_id:
                 #Check if item requirements are met
-                if(check_item_conditions(item_id)):
+                if(check_item_conditions(item_id, True)):
                     #Print the use text, if it has any
                     if "text" in item_id["use"]:
                         printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
@@ -369,10 +368,14 @@ def print_mirror_menu():
             name = str(input())
             player["description"]["name"] = name
             Finished = check_appearance()
+            
         elif s == "7":
             print_appearance()
         elif s == "8":
-            Finished = True
+            break
+        #After the item has finished it's task, remove it.
+        if Finished == True:
+            rooms["Bathroom"]["items"].remove(item_mirror)
         
 def print_appearance():
     global player
@@ -614,6 +617,8 @@ def reset_game():
     previous_room = ""
     #Reset player dictionary.
     player = reset_player()
+    #Reassign inventory to the dict entry
+    inventory = player["inventory"]
     #Clear rooms of all items and add the default items for each room to that room.
     #This is done like this rather than assigning the default items value to items to prevent the editing of the default values.
     #This allows for the restarting of the game without restarting the whole program.
@@ -624,7 +629,6 @@ def reset_game():
         for item in rooms[room]["items default"]:
             rooms[room]["items"].append(item)
     #Regenerate GETs with default values.
-    GETs = {}
     GETs = generate_all_GETs()
 
 def load_reset():
@@ -659,8 +663,10 @@ def check_win_conditions():
     stage = player["stage"]
     sanity_level = player["sanity"]
     Output = [False, False]
+    #If the stage is greater than 5, the player wins
     if stage == 5:
         Output[0] = True
+    #If sanity level is below -5, the player loses
     if sanity_level < -5:
         Output[1] = True
     return Output

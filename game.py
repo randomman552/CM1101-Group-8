@@ -10,7 +10,6 @@ import typingprint
 import pygame
 from pygame import mixer
 from save import *
-from load import *
 
 #Initialise inventory as a global variable
 inventory = []

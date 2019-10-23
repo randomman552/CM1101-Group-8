@@ -527,7 +527,7 @@ def execute_command(command):
         elif command[0] == "load":
             printstr = "Loading"
         elif command[0] == "save":
-            save_data(player)
+            save_data(player, current_room, GETs)
             printstr = "Game Saved"
     else:
         #If the command is invalid, change the printstr to reflect so

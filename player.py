@@ -49,11 +49,6 @@ playerdefault = {
         "hair_length": ["Short", "Medium", "Long"],
         "gender": ["Male", "Female"]
     },
-    "memory": {
-        "name": "Bob",
-        "age": "3000",
-        "password": [] #Placeholder, for use in password puzzle?
-    }
 }
 
 def Name_Shuffle(name):

@@ -245,27 +245,6 @@ def execute_inspect(item_id):
             printstr += "\n" + deep_inspect(item_id)
     return printstr
 
-def execute_remember(remembering = ""):
-    """Allows the player to recall things stored in their memory.
-    Takes a string for input, will check if an entry with the same string exists in memory,
-    if it does, then it will print what it stores.
-    """
-    printstr = ANSIstyles.RED + "You don't seem to remember anything like that." + ANSIstyles.END
-    #Check if remembering has a value.
-    if remembering == "":
-        #If remembering is empty, then print all items in memory.
-        printstr = ""
-        for memory in player["memory"]:
-            printstr = printstr + memory + ": " + str(player["memory"][memory]) + "\n"
-    else:
-        #If remembering does have a value, then
-        try:
-            #Print value of that memory
-            printstr = remembering + ": " + player["memory"][remembering]
-        except KeyError:
-            pass
-    return printstr
-
 def check_item_conditions(item_id):
     """Checks if item requirements are met"""
     output = True
@@ -277,7 +256,10 @@ def check_item_conditions(item_id):
                         if not(item in inventory or item in current_room["items"]):
                             return False
                         else:
-                            inventory.remove(item)
+                            try:
+                                inventory.remove(item)
+                            except ValueError:
+                                pass
                 elif not GETs[condition] == item_id["use"]["conditions"][condition]:
                     return False
     elif item_id["name"] in rooms:
@@ -293,9 +275,9 @@ def apply_item_effects(item_id):
     global GETs
     use = item_id["use"]
     if "stage effect" in use:
-        player["stage"] += use["stage effect"]
+        player["stage"] = use["stage effect"]
     if "psychosis effect" in use:
-        player["psychosis meter"] += use["psychosis effect"]
+        player["psychosis meter"] = player ["psychosis meter"] + use["psychosis effect"]
     if "items" in use:
         for item in use["items"]:
             inventory.append(item)
@@ -681,9 +663,12 @@ def check_win_conditions():
     If the win conditions are true then it will return true"""
     #Get the current stage from player dictionary
     stage = player["stage"]
-    Output = False
-    if stage > 4:
-        Output = True
+    psychosis_level = player["psychosis meter"]
+    Output = [False, False]
+    if stage == 5:
+        Output[0] = True
+    if psychosis_level < -5:
+        Output[1] = True
     return Output
 
 # This is the entry point of our program
@@ -702,50 +687,53 @@ def main():
             reset_game()
         
         # Main game loop
-        win = False
-        while not win:
+        endstate = check_win_conditions()
+        while endstate == [False, False]:
             #Clear screen at the begining of each loop
             if os.name == 'nt':
                 os.system("cls")
             global current_room
             global player
-            if player["stage"] == 2:
+            if player["stage"] >= 2 and player["stage"] < 5:
                 current_room = rooms["Null"]
-                player["stage"] += 1
+            global previous_room
+            global type_print
+            #Update type_print
+            type_print = not bool(previous_room == current_room)
+
+            # Display game status (room description, inventory etc.)
+            print_room(current_room)
+            previous_room = current_room
+            typingprint.slow_print(return_inventory_items(inventory),type_print)
+
+            # Show the menu with possible actions and ask the player
+            command = menu(current_room["exits"], current_room["items"], inventory)
+
+            if not os.name == 'nt':
+                os.system('clear')
+            # Execute the player's command
+            if command[0] in ["quit","load","save"]:
+                #If the command is meant to carry out a command outside the game, for example quiting the game.
+                if command[0] == "quit":
+                    break #Breaks out of the loop, and starts the main menu again
+                elif command[0] == "load":
+                    pass
+                elif command[0] == "save":
+                    save_data(player)
             else:
-                global previous_room
-                global type_print
-                #Update type_print
-                type_print = not bool(previous_room == current_room)
-
-                # Display game status (room description, inventory etc.)
-                print_room(current_room)
-                previous_room = current_room
-                typingprint.slow_print(return_inventory_items(inventory),type_print)
-
-                # Show the menu with possible actions and ask the player
-                command = menu(current_room["exits"], current_room["items"], inventory)
-
-                if not os.name == 'nt':
-                    os.system('clear')
-                # Execute the player's command
-                if command[0] in ["quit","load","save"]:
-                    #If the command is meant to carry out a command outside the game, for example quiting the game.
-                    if command[0] == "quit":
-                        break #Breaks out of the loop, and starts the main menu again
-                    elif command[0] == "load":
-                        pass
-                    elif command[0] == "save":
-                        save_data(player)
-                else:
-                    #If the command is meant to be carried out within the game.
-                    execute_command(command)
+                #If the command is meant to be carried out within the game.
+                execute_command(command)
+            
+            #If running on windows, pause (pause is not available on mac)
+            if os.name == 'nt':
+                os.system("pause")
                 
-                #Check win conditions
-                win = check_win_conditions()
-
-                if os.name == 'nt':
-                    os.system("pause")
+            #Check win conditions
+            endstate = check_win_conditions()
+        if endstate[0] == True:
+            mainmenu.endscreen("win")
+        elif endstate[1] == True:
+            mainmenu.endscreen("lose")
 
 
 

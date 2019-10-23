@@ -13,7 +13,10 @@ room_bedroom = {
     "exits": {"north": "Bathroom", "west": "Hallway"},
     #Items contains a list of the items available in the room on game start.
     "items": [],
-    "items default": [item_window, item_wardrobe, item_matches, item_candle, item_clock]
+    "items default": [item_window, item_wardrobe, item_matches, item_candle, item_clock],
+    "conditions":{
+
+    }
 }
 
 room_bathroom = {
@@ -30,7 +33,10 @@ room_bathroom = {
     "exits": {"south": "Bedroom"},
     #Items contains a list of the items available in the room on game start.
     "items": [],
-    "items default": [item_mirror, item_writing_on_wall, item_medication]
+    "items default": [item_mirror, item_writing_on_wall, item_medication],
+    "conditions":{
+        "candle": True
+    }
 }
 
 room_hallway = {
@@ -44,7 +50,10 @@ room_hallway = {
     "exits": {"east": "Bedroom", "west": "Lounge", "north": "Kitchen", "south": "Outside"},
     #Items contains a list of the items available in the room on game start.
     "items": [],
-    "items default": [item_coat, item_fusebox, item_vase, item_door]
+    "items default": [item_coat, item_fusebox, item_vase, item_door],
+    "conditions":{
+        "candle": True
+    }
 }
 
 room_living_room = {
@@ -59,7 +68,10 @@ room_living_room = {
     "exits": {"east": "Hallway", "north": "Office"},
     #Items contains a list of the items available in the room on game start.
     "items": [],
-    "items default": [item_picture, item_fuse, item_wall_markings, item_magnifying_glass]
+    "items default": [item_picture, item_fuse, item_wall_markings, item_magnifying_glass],
+    "conditions":{
+        
+    }
 }
 
 room_office = {
@@ -73,7 +85,10 @@ room_office = {
     "exits": {"south": "Lounge"},
     #Items contains a list of the items available in the room on game start.
     "items": [],
-    "items default": [item_book, item_computer, item_paper]
+    "items default": [item_book, item_computer, item_paper],
+    "conditions":{
+        "office open": True
+    }
 }
 
 room_kitchen = {
@@ -87,7 +102,10 @@ room_kitchen = {
     "exits": {"south": "Hallway"},
     #Items contains a list of the items available in the room on game start.
     "items": [],
-    "items default": [item_knife, item_bowl, item_painting]
+    "items default": [item_knife, item_bowl, item_painting],
+    "conditions":{
+        
+    }
 }
 
 room_outside = {
@@ -100,7 +118,10 @@ room_outside = {
     "exits": {"north": "Hallway"},
     #Items contains a list of the items available in the room on game start.
     "items": [],
-    "items default": []
+    "items default": [],
+    "conditions":{
+        "outside open": True
+    }
 }
 
 room_null = {
@@ -114,7 +135,10 @@ Although you have no idea where to start...""",
     "exits": {"north": "Null", "south": "Null", "west": "Null", "east": "Null"},
     
     "items": [],
-    "items default": []
+    "items default": [],
+    "conditions":{
+        "outside open": True
+    }
 }
 
 #Contains all of the rooms in the game with an identifier.

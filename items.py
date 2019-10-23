@@ -57,8 +57,9 @@ item_mirror = {
     'Who am I?'""",
 
     "use": {
-        
-        
+        "conditions": { 
+
+        },
         "text": """Something feels off about this mirror. 'Mirrors are
     perpetually deceitful. They lie and steal your true self.
     They reveal only what your mind believes it sees.' Comes to mind.
@@ -95,8 +96,10 @@ item_key = {
         "It's just a small key",
     
     "use": {
-        
-        
+        "conditions": { 
+
+        },
+
         "text":
         """You open the office door, expecting
         for answers but you can only see a blue light
@@ -132,13 +135,15 @@ item_writing_on_wall = {
     figure this out, might be a name...""",
 
     "use": {
-
+        "conditions": { 
+            
+        },
         "text":
         """Those letters are jumbled. Can't be too hard...
         R C E A S A""",
 
         "GETs effect": {
-            "power": False
+
             },
         
         "stage effect": 1,
@@ -147,7 +152,7 @@ item_writing_on_wall = {
         
         "remove after use": False,
         
-        #"items":[]
+        "items":[]
         }
     }
 
@@ -164,6 +169,25 @@ item_matches = {
 
     "inspection":
     """Just a box of matches.""",
+    "use": {
+        "conditions": { 
+            
+        },
+        "text":
+        """You light the canlde using the matches""",
+
+        "GETs effect": {
+                "matches": True
+            },
+        
+        "stage effect": 1,
+        
+        "psychosis effect": 0,
+        
+        "remove after use": True,
+        
+        "items":[]
+        }
     }
 
 item_candle = {
@@ -180,18 +204,24 @@ item_candle = {
     """Just a wax candle""",
 
     "use": {
+        "conditions": { 
+            "matches": True
+        },
 
         "text":
         """You have a light source now. You can see two
-        doors. One leads to a bathroom for sure.""",
+doors. One leads to a bathroom for sure. 
+You take the candle and get ready to move on.""",
 
-        "GETs effect": { "power": False},
+        "GETs effect": { 
+            "candle": True
+        },
         
         "stage effect": 1,
         
         "psychosis effect": 0,
         
-        "remove after use": False,
+        "remove after use": True,
         
         "items":[]
         }

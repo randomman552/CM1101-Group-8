@@ -32,7 +32,7 @@ a drawer that you cannot open.""",
     "exits": {"south": "Bedroom"},
     #Items contains a list of the items available in the room on game start.
     "items": [],
-    "items default": [item_mirror, item_writing_on_wall, item_medication],
+    "items default": [item_mirror, item_writing_on_wall],
     "conditions":{
         "candle": True
     }

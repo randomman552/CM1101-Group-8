@@ -33,6 +33,14 @@ playerdefault = {
         "hair_length": ""
         "gender": ""
     },
+    "reality": {
+        "name": "sdaw"
+        "height": "180cm"
+        "eye_colour": "Blue"
+        "hair_colour": "Brown"
+        "hair_length": "Medium"
+        "gender": "Male"
+    },
     "options": {
         "name": ""
         "height": ["160cm", "170cm", "180cm"]

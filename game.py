@@ -630,7 +630,10 @@ def main():
         win = False
         while not win:
             #Clear screen at the begining of each loop
-            os.system("cls||clear")
+            
+            if os.name == 'nt':
+                os.system("cls")
+
             if player["stage"] == 0:
                 #Set values for first stage, then increment stage by 1 to enter it.
                 player["stage"] += 1
@@ -648,7 +651,8 @@ def main():
                 # Show the menu with possible actions and ask the player
                 command = menu(current_room["exits"], current_room["items"], inventory)
 
-                
+                if not os.name == 'nt':
+                    os.system('clear')
                 # Execute the player's command
                 if command[0] in ["quit","load","save"]:
                     #If the command is meant to carry out a command outside the game, for example quiting the game.
@@ -665,7 +669,8 @@ def main():
                 #Check win conditions
                 win = check_win_conditions()
 
-                os.system("pause")
+                if os.name == 'nt':
+                    os.system("pause")
 
 
 

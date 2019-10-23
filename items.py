@@ -1,4 +1,3 @@
-
 def caesar_cipher(text, shift):
     text = text.lower()
     characters = [char for char in text]
@@ -510,7 +509,15 @@ item_computer = {
             "computer on": True
         },
 
-        "text": """ """,
+        "text": """Hello! How do you find our puzzles? You might be tired,
+        the transfer process wasn't an easy one. Recover yourself and get out of here.
+        The more time you spend in this house, harder will be to come back to life.
+        If we can solve the puzzles and go out, we deserve it! Don't forget about the
+        pills. They are behind the mirror. There is a chance some programmes have some
+        failures, but the environment won't affect you. I just hope you remember... .
+        Otherwise, you have to complete every quest or the computer will erase us.
+        One last thing! You have placed some clues in the puzzles in order to help
+        you remember. Use them wise, they don't last for long!""",
 
         "GETs effect": {
             "computer used": True
@@ -628,7 +635,10 @@ item_door = {
         "text": 
         """You open the door and see nothing. You can't control
         yourself and you go out. You see a field and the sky, but
-        the sky is not blue. It looks like... .""",
+        the sky is not blue. It looks like... your bedroom ceiling.
+        You are in your bed. Maybe it was just a dream... or a nightmare.
+        Your alarm clock is ringing now... 12:00. I overslept again!
+        I need my pills first!",
 
         "GETs effect": {
             "outside open": True

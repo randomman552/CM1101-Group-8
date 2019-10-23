@@ -272,9 +272,9 @@ def execute_use(item_id):
                     #Print the use text.
                     printstr = item_id["id"] + ":\n" + item_id["use"]["text"]
                     apply_item_effects(item_id)
-                    if item_id == "mirror":
+                    if item_id["id"] == "mirror":
                         print_mirror_menu()
-                    if item_id == "computer":
+                    if item_id["id"] == "computer":
                         password_prompt()
                     #If the item needs to be removed after use, remove it from inventory or room.
                     if item_id["use"]["remove after use"]:

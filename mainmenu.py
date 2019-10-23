@@ -89,7 +89,7 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
     maximum_selection = len(options) - 1
     while True:
         #Main display loop
-        os.system("clear")
+        os.system("cls||clear")
         update_display(gamelogo, current_selection, options, "GROUP-8 2019. Using Pygame and Keyboard librarys. George, James, Nick, Radu, Reuben, Sabeehah, and Sean")
         keypressed = key_press()
         if (keypressed == "s"):
@@ -112,7 +112,7 @@ def menu(options = ["New game ", "Load game", "Quit     "]):
     #This is a way of clearing the users input. Otherwise it would come up with all of the keys they pressed while in the menu after exiting it.
     keyboard.press_and_release('enter')
     input()
-    os.system("clear")
+    os.system("cls||clear")
     return options[current_selection]
 
 def endscreen(mode):
@@ -139,7 +139,7 @@ def endscreen(mode):
     win = win_string.splitlines()
     lose = lose_string.splitlines()
     while True:
-        os.system("clear")
+        os.system("cls||clear")
         keypressed = key_press()
         if keypressed == " ":
             break

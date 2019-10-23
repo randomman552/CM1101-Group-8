@@ -20,7 +20,7 @@ item_medication = {
         #Conditions sets what conditions must be true in order for the item to be usable. 
         #These conditions are added automatically to the GETs system.
         "conditions": { 
-            "fuse box": True
+
         },
         #Text is printed when the item is used
         "text":
@@ -28,7 +28,7 @@ item_medication = {
         You swallow the pills quickly, and get ready to move on.""",
         #This dictates how the usage of an item will affect the GETs system.
         "GETs effect":{
-            "power": False
+
         },
         
         "stage effect": 0,
@@ -58,7 +58,6 @@ item_mirror = {
 
     "use": {
         
-        "conditions": True,
         
         "text": """Something feels off about this mirror. 'Mirrors are
     perpetually deceitful. They lie and steal your true self.
@@ -97,7 +96,6 @@ item_key = {
     
     "use": {
         
-        "conditions": True,
         
         "text":
         """You open the office door, expecting
@@ -134,7 +132,6 @@ item_writing_on_wall = {
     figure this out, might be a name...""",
 
     "use": {
-        "conditions":{ True }, #item_magnifying_glass in inventory
 
         "text":
         """Those letters are jumbled. Can't be too hard...
@@ -183,7 +180,6 @@ item_candle = {
     """Just a wax candle""",
 
     "use": {
-        "conditions": { True}, #item_matches in inventory
 
         "text":
         """You have a light source now. You can see two
@@ -216,7 +212,7 @@ item_clock = {
     """I hope it rings and the nightmare will be gone.""",
     
     "use": {
-        "conditions": True,
+         
         
         "text":
         """You push the buttons but nothing happens.
@@ -289,7 +285,7 @@ item_wardrobe = {
     """We have to open it to see more.""",
 
     "use": {
-        "conditions": True,
+         
 
         "text":
         """A red scarf, straight out of Hogwarts. It's more familiar than I care to admit.""",
@@ -323,7 +319,7 @@ item_coat = {
     """Nothing in the pokets, I feel like something is missing.""",
 
     "use": {
-        "conditions": True,
+         
         
         "text": "You put the coat on, you find its warmth comforting.",
         
@@ -353,7 +349,7 @@ item_fusebox = {
     """I need a fuse to power up the house""",
     
     "use": {
-        "conditions": True, #item_fuse in inventory
+          #item_fuse in inventory
         
         "text":
             """You open it and push back in its place.
@@ -406,7 +402,6 @@ item_picture = {
     """This one is very familiar. I feel like I am somehow related to him.""",
 
     "use": {
-        "conditions": True , #item_red_scarf in inventory
 
         "text":
         """It's me! This one with the red scarf... it's me...
@@ -527,7 +522,6 @@ item_computer = {
     """It looks like my first computer.""",
 
     "use": {                #conditions
-        "conditions": None,
 
         "text": """ """,
 
@@ -556,7 +550,7 @@ item_knife = {
     
 
     "use": {
-        "conditions": True,
+         
         
         "text": "You don't want to do that.",
 
@@ -584,7 +578,7 @@ item_bowl = {
     """It feels like a memmory.""",
 
     "use": {
-        "conditions": True,
+         
 
         "text":
         """It also tastes like my moms. Weird.""",
@@ -628,7 +622,6 @@ item_door = {
         We have to figure this out.""",
         
     "use": {
-        "conditions": None,
         
         "text": 
         """You open the door and see nothing. You can't control

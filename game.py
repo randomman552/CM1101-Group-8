@@ -235,9 +235,10 @@ def execute_remember(remembering = ""):
 def check_item_conditions(item_id):
     """Checks if item GETs requirements are met"""
     output = True
-    for condition in item_id["use"]["conditions"]:
-        if not GETs[condition] == item_id["use"]["conditions"][condition]:
-            return False
+    if "conditions" in item_id["use"]:
+        for condition in item_id["use"]["conditions"]:
+            if not GETs[condition] == item_id["use"]["conditions"][condition]:
+                return False
     return output
 
 def apply_item_effects(item_id):
@@ -629,7 +630,7 @@ def main():
         win = False
         while not win:
             #Clear screen at the begining of each loop
-            os.system("clear")
+            os.system("cls||clear")
             if player["stage"] == 0:
                 #Set values for first stage, then increment stage by 1 to enter it.
                 player["stage"] += 1

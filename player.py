@@ -1,4 +1,3 @@
-
 from items import *
 from map import rooms
 from gameparser import *
@@ -27,12 +26,12 @@ playerdefault = {
     "psychosis meter": 0,
     "inventory": [],
     "description": {
-        "name": "",
-        "height": "",
-        "eye_colour": "",
-        "hair_colour": "",
-        "hair_length": "",
-        "gender": ""
+        "name": "???",
+        "height": "???",
+        "eye_colour": "???",
+        "hair_colour": "???",
+        "hair_length": "???",
+        "gender": "???"
     },
     "reality": {
         "name": "sdaw",

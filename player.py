@@ -1,3 +1,4 @@
+
 from items import *
 from map import rooms
 from gameparser import *
@@ -19,34 +20,34 @@ def Get_Player_Age():
         print("Thats not a number!")
         os.system("pause")
         quit()
-        
+
 player = {}
 playerdefault = {
     "stage": 0,
     "psychosis meter": 0,
     "inventory": [],
     "description": {
-        "name": ""
-        "height": ""
-        "eye_colour": ""
-        "hair_colour": ""
-        "hair_length": ""
+        "name": "",
+        "height": "",
+        "eye_colour": "",
+        "hair_colour": "",
+        "hair_length": "",
         "gender": ""
     },
     "reality": {
-        "name": "sdaw"
-        "height": "180cm"
-        "eye_colour": "Blue"
-        "hair_colour": "Brown"
-        "hair_length": "Medium"
+        "name": "sdaw",
+        "height": "180cm",
+        "eye_colour": "Blue",
+        "hair_colour": "Brown",
+        "hair_length": "Medium",
         "gender": "Male"
     },
     "options": {
-        "name": ""
-        "height": ["160cm", "170cm", "180cm"]
-        "eye_colour": ["Blue", "Hazel", "Green"]
-        "hair_colour": ["Brown", "Black", "Red", "Blonde"]
-        "hair_length": ["Short", "Medium", "Long"]
+        "name": "",
+        "height": ["160cm", "170cm", "180cm"],
+        "eye_colour": ["Blue", "Hazel", "Green"],
+        "hair_colour": ["Brown", "Black", "Red", "Blonde"],
+        "hair_length": ["Short", "Medium", "Long"],
         "gender": ["Male", "Female"]
     },
     "memory": {
@@ -66,3 +67,4 @@ def Name_Shuffle(name):
 # Start game in the bedroom
 current_room = rooms["Bedroom"]
 previous_room = ""
+inventory = []

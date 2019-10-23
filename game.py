@@ -1,4 +1,4 @@
-from map import rooms
+from map import *
 from items import items
 from gameparser import *
 import os
@@ -308,52 +308,51 @@ def print_mirror_menu():
         if s == "1":
             print_list(player["options"]["height"], "height")
             check_appearance()
-        elif: s == "2":
+        elif s == "2":
             print_list(player["options"]["hair_colour"], "hair_colour")
             check_appearance()
-        elif: s == "3":
+        elif s == "3":
             print_list(player["options"]["hair_length"], "hair_length")
             check_appearance()
-        elif: s == "4":
+        elif s == "4":
             print_list(player["options"]["eye_colour"], "eye_colour")
             check_appearance()
-        elif: s == "5":
+        elif s == "5":
             print_list(player["options"]["gender"], "gender")
             check_appearance()
-        elif: s == "6":
+        elif s == "6":
             print("Please enter your name: ")
             name = str(input())
             player["description"]["name"] = name
-        elif: s == "7":
+        elif s == "7":
             print_appearance()
-        elif: s == "8":
+        elif s == "8":
             Finished = True
         
 def print_appearance():
     global player
     print("Your name is " + player["description"]["name"] + " and you are " + player["description"]["height"] + ". You have ", \
-    + player["description"]["hair_length"] + " " + player["description"]["hair_colour"] + " hair with " + player["description"]["eye_colour"], \
-    + " eyes.")
+    + player["description"]["hair_length"] + " " + player["description"]["hair_colour"] + " hair with " + player["description"]["eye_colour"] + " eyes.")
     
 def check_appearance():
     global player
     counter = 0
     
-        if player["description"]["name"] == player["reality"]["name"]:
-            counter += 1
-        if player["description"]["height"] == player["reality"]["height"]:
-            counter += 1
-        if player["description"]["hair_colour"] == player["reality"]["hair_colour"]:
-            counter += 1
-        if player["description"]["hair_length"] == player["reality"]["hair_length"]:
-            counter += 1
-        if player["description"]["eye_colour"] == player["reality"]["eye_colour"]:
-            counter += 1
-        if player["description"]["gender"] == player["reality"]["gender"]:
-            counter += 1    
-        
-        if counter == 6:
-            Print("Congratulations you know who you are")
+    if player["description"]["name"] == player["reality"]["name"]:
+        counter += 1
+    if player["description"]["height"] == player["reality"]["height"]:
+        counter += 1
+    if player["description"]["hair_colour"] == player["reality"]["hair_colour"]:
+        counter += 1
+    if player["description"]["hair_length"] == player["reality"]["hair_length"]:
+        counter += 1
+    if player["description"]["eye_colour"] == player["reality"]["eye_colour"]:
+        counter += 1
+    if player["description"]["gender"] == player["reality"]["gender"]:
+        counter += 1    
+    
+    if counter == 6:
+        print("Congratulations you know who you are")
         
 
 def print_list(lists, command):

@@ -1,3 +1,4 @@
+
 item_medication = {
     #id of the room, is used as its name
     "id": "medication",
@@ -57,7 +58,7 @@ item_mirror = {
 
     "use": {
         
-        "conditions": True
+        "conditions": True,
         
         "text": """Something feels off about this mirror. 'Mirrors are
     perpetually deceitful. They lie and steal your true self.
@@ -75,7 +76,7 @@ item_mirror = {
         
         "remove after use": True,
         
-        "items": [item_key]
+        #"items": [item_key]
         }
     }
 
@@ -96,7 +97,7 @@ item_key = {
     
     "use": {
         
-        "conditions": True
+        "conditions": True,
         
         "text":
         """You open the office door, expecting
@@ -126,18 +127,18 @@ item_writing_on_wall = {
 
     "description":
     """A jumbled mess of letters. I'm not sure what
-    it's supposed to mean."""
+    it's supposed to mean.""",
 
     "inspection":
     """Nothing more than letters. I have to
     figure this out, might be a name...""",
 
     "use": {
-        "conditions":{ item_agnifying_glass in inventory }
+        "conditions":{ True }, #item_magnifying_glass in inventory
 
         "text":
         """Those letters are jumbled. Can't be too hard...
-        R C E A S A"""
+        R C E A S A""",
 
         "GETs effect": {
             "power": False
@@ -149,7 +150,7 @@ item_writing_on_wall = {
         
         "remove after use": False,
         
-        "items":[]
+        #"items":[]
         }
     }
 
@@ -182,7 +183,7 @@ item_candle = {
     """Just a wax candle""",
 
     "use": {
-        "conditions": {item_matches in inventory},
+        "conditions": { True}, #item_matches in inventory
 
         "text":
         """You have a light source now. You can see two
@@ -268,7 +269,7 @@ item_red_scarf = {
     "weight": 0,
 
     "description":
-    """This is my red scarf."""
+    """This is my red scarf.""",
 
     "inspection":
     """Oh it has some 0s and 1s on it."""
@@ -285,13 +286,13 @@ item_wardrobe = {
     """A wardrobe... Are those my clothes? Maybe I can find something.""",
 
     "inspection":
-    """We have to open it to see more."""
+    """We have to open it to see more.""",
 
     "use": {
         "conditions": True,
 
         "text":
-        """A red scarf, straight out of Hogwarts. It's more familiar than I care to admit."""
+        """A red scarf, straight out of Hogwarts. It's more familiar than I care to admit.""",
 
         "GETs effect": {"power": False},
 
@@ -352,7 +353,7 @@ item_fusebox = {
     """I need a fuse to power up the house""",
     
     "use": {
-        "conditions": item_fuse in inventory,
+        "conditions": True, #item_fuse in inventory
         
         "text":
             """You open it and push back in its place.
@@ -382,7 +383,7 @@ item_vase = {
     "description":
     """A vase filled with dead flowers. How long have
     these been here?I never was good at looking
-    after things."""
+    after things.""",
 
     "inspection":
     """I should throw those flowers away after
@@ -399,17 +400,17 @@ item_picture = {
     "weight": 1,
 
     "description":
-    """I remember every face but this one... I can't recall any name though."""
+    """I remember every face but this one... I can't recall any name though.""",
 
     "inspection":
     """This one is very familiar. I feel like I am somehow related to him.""",
 
     "use": {
-        "conditions": item_red_scarf in inventory,
+        "conditions": True , #item_red_scarf in inventory
 
         "text":
         """It's me! This one with the red scarf... it's me...
-        blonde, black eyes... ."""
+        blonde, black eyes... .""",
 
         "GETs effect": {"power": False},
 
@@ -447,7 +448,7 @@ item_wall_markings = {
     "take": False,
 
     "description":
-    """Those have to be related with height. I wonder which one fits me."""
+    """Those have to be related with height. I wonder which one fits me.""",
 
     "inspection":
     """Let's see...
@@ -492,7 +493,7 @@ item_book = {
     been burnt off. Huh."""
     }
 
-items_paper = {
+item_paper = {
     "id": "paper",
 
     "name": "a scrap of paper",
@@ -503,7 +504,7 @@ items_paper = {
 
     "description":
     """A scrap of paper...why does it also looks old?
-    Everything seems to be a memmory."""
+    Everything seems to be a memmory.""",
 
     "inspections":
     """On the scrap is written "Often will I spin a tale,
@@ -526,7 +527,7 @@ item_computer = {
     """It looks like my first computer.""",
 
     "use": {                #conditions
-        "conditions": {},
+        "conditions": None,
 
         "text": """ """,
 
@@ -537,7 +538,7 @@ item_computer = {
         "psychosis effect": 0,
 
         "items":[]
-        }
+        },
     "password" : "",
     }
 
@@ -551,7 +552,7 @@ item_knife = {
     "weight": 1,
 
     "description":
-    """A kitchen knife. It's very, very sharp."""
+    """A kitchen knife. It's very, very sharp.""",
     
 
     "use": {
@@ -559,7 +560,7 @@ item_knife = {
         
         "text": "You don't want to do that.",
 
-        "GETs effect": {}
+        "GETs effect": {},
         
         "stage effect": 1,
         
@@ -609,7 +610,7 @@ item_painting = {
 
     "description":
     """The painting reads "Retro Bazinger!".
-    It looks like someone was a fan of computer games."""
+    It looks like someone was a fan of computer games.""",
 
     "inspection":
     """Nothing more than a comic page in a frame."""
@@ -624,7 +625,7 @@ item_door = {
     
     "description": 
         """This door seems to be the answer to everything.
-        We have to figure this out."""
+        We have to figure this out.""",
         
     "use": {
         "conditions": None,
@@ -657,7 +658,7 @@ items = {
     "clock": item_clock,
     "mirror": item_mirror,
     "writing": item_writing_on_wall,
-    "medicine": item_medicine,
+    "medicine": item_medication,
     "coat": item_coat,
     "fusebox": item_fusebox,
     "vase": item_vase,
@@ -665,11 +666,11 @@ items = {
     "picture": item_picture,
     "fuse": item_fuse,
     "markings": item_wall_markings,
-    "magnifying glass": item_mignyfing_glass,
+    "magnifying glass": item_magnifying_glass,
     "book": item_book,
     "computer": item_computer,
     "paper": item_paper,
-    "knife": item_knive,
+    "knife": item_knife,
     "bowl": item_bowl,
     "painting": item_painting,
     "key": item_key,

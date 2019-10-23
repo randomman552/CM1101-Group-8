@@ -331,7 +331,7 @@ def print_mirror_menu():
         
 def print_appearance():
     global player
-    print("Your name is " + player["description"]["name"] + " and you are " + player["description"]["height"] + ". You have ", \
+    print("Your name is " + player["description"]["name"] + " and you are " + player["description"]["height"] + ". You have "
     + player["description"]["hair_length"] + " " + player["description"]["hair_colour"] + " hair with " + player["description"]["eye_colour"] + " eyes.")
     
 def check_appearance():
@@ -359,10 +359,10 @@ def print_list(lists, command):
     global player
     counter = 0
     for item in lists:
-        print("[" + (counter + 1) + "] " + item)
+        print("[" + str(counter + 1) + "] " + item)
         counter += 1
         
-    print("[" + (counter + 1) + "] keep it the same")
+    print("[" + str(counter + 1) + "] keep it the same")
     i = str(input())
     s = ""
     for ch in i:

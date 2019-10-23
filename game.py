@@ -496,10 +496,21 @@ def execute_command(command):
             printstr = execute_use(command[1])
         else:
             printstr =  ANSIstyles.RED + "Use what?" + ANSIstyles.END
+    #If the command is meant to carry out a command outside the game, for example quiting the game.
+    elif command[0] in ["quit","load","save"]:
+        #Quit, load and save commands are handled in here.
+        if command[0] == "quit":
+            printstr = "quit"
+        elif command[0] == "load":
+            printstr = "Loading"
+        elif command[0] == "save":
+            save_data(player)
+            printstr = "Game Saved"
     else:
         #If the command is invalid, change the printstr to reflect so
         printstr = ANSIstyles.RED + "Invalid command!" + ANSIstyles.END
-    typingprint.slow_print(printstr, True)
+    #Return the created response to the users command
+    return printstr
 
 def return_exit(direction, leads_to):
     """This function returns a line to print_exits, these are then printed out in the standard menu format:"""
@@ -715,7 +726,8 @@ def main():
                 current_room = rooms["Null"]
             global previous_room
             global type_print
-            #Update type_print
+
+            #Update type_print, this variable tells the program whether it should use the slow typing profile or not.
             type_print = not bool(previous_room == current_room)
 
             # Display game status (room description, inventory etc.)
@@ -728,18 +740,13 @@ def main():
 
             if not os.name == 'nt':
                 os.system('clear')
+            
             # Execute the player's command
-            if command[0] in ["quit","load","save"]:
-                #If the command is meant to carry out a command outside the game, for example quiting the game.
-                if command[0] == "quit":
-                    break #Breaks out of the loop, and starts the main menu again
-                elif command[0] == "load":
-                    pass
-                elif command[0] == "save":
-                    save_data(player)
+            command_return = execute_command(command)
+            if command_return == "quit":
+                break
             else:
-                #If the command is meant to be carried out within the game.
-                execute_command(command)
+                typingprint.slow_print(command_return)
             
             #If running on windows, pause (pause is not available on mac)
             if os.name == 'nt':

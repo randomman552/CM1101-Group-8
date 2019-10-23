@@ -23,7 +23,7 @@ def Get_Player_Age():
 player = {}
 playerdefault = {
     "stage": 0,
-    "psychosis meter": 0,
+    "sanity": 0,
     "inventory": [],
     "description": {
         "name": "???",

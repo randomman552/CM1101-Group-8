@@ -277,7 +277,7 @@ def apply_item_effects(item_id):
     if "stage effect" in use:
         player["stage"] = use["stage effect"]
     if "psychosis effect" in use:
-        player["psychosis meter"] = player ["psychosis meter"] + use["psychosis effect"]
+        player["sanity"] = player ["sanity"] + use["psychosis effect"]
     if "items" in use:
         for item in use["items"]:
             inventory.append(item)
@@ -434,7 +434,7 @@ def password_prompt():
             Finished = True
         else:
             print("Incorrect Password")
-            player["psychosis meter"] += 1
+            player["sanity"] -= 1
     
 def execute_command(command):
     """This function takes a command (a list of words as returned by
@@ -472,12 +472,6 @@ def execute_command(command):
             printstr = execute_inspect(command[1])
         else:
             printstr =  ANSIstyles.RED + "Inspect what?" + ANSIstyles.END
-    #Remember command section
-    elif command[0] == "remember":
-        if len(command) > 1:
-            printstr = execute_remember(command[1])
-        else:
-            printstr = execute_remember()
     #Use command section
     elif command[0] == "use":
         if len(command) > 1:
@@ -663,11 +657,11 @@ def check_win_conditions():
     If the win conditions are true then it will return true"""
     #Get the current stage from player dictionary
     stage = player["stage"]
-    psychosis_level = player["psychosis meter"]
+    sanity_level = player["sanity"]
     Output = [False, False]
     if stage == 5:
         Output[0] = True
-    if psychosis_level < -5:
+    if sanity_level < -5:
         Output[1] = True
     return Output
 
@@ -730,6 +724,8 @@ def main():
                 
             #Check win conditions
             endstate = check_win_conditions()
+
+        #Display apppropriate end screen
         if endstate[0] == True:
             mainmenu.endscreen("win")
         elif endstate[1] == True:

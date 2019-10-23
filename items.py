@@ -1,4 +1,11 @@
 
+def caesar_cipher(text, shift):
+  characters = [char for char in text]
+  return ''.join(list(map(lambda character: 
+    ' ' if ord(character) == 32 else chr((ord(character) + shift - 97) % 26 + 97),
+    characters)))
+
+
 item_medication = {
     #id of the room, is used as its name
     "id": "medication",
@@ -20,7 +27,7 @@ item_medication = {
         #Conditions sets what conditions must be true in order for the item to be usable. 
         #These conditions are added automatically to the GETs system.
         "conditions": { 
-
+            "computer used": True
         },
         #Text is printed when the item is used
         "text":
@@ -28,7 +35,7 @@ item_medication = {
         You swallow the pills quickly, and get ready to move on.""",
         #This dictates how the usage of an item will affect the GETs system.
         "GETs effect":{
-
+            "door unlocked": True
         },
         
         "stage effect": 0,
@@ -48,74 +55,24 @@ item_mirror = {
 
     "take": False,
 
-    "description":
-    """A drawer with a mirror on it. It reflects the
-    light but I cannot see myself.""",
-
-    "inspection": 
-    """All I can see is my purpose, a question: 
-    'Who am I?'""",
-
     "use": {
         "conditions": { 
 
         },
-        "text": """Something feels off about this mirror. 'Mirrors are
-    perpetually deceitful. They lie and steal your true self.
-    They reveal only what your mind believes it sees.' Comes to mind.
-    All you can see is your purpose, a question: 
-    'Who are you?'""",
+        "text": """""",
         
         "GETs effect":{
-            "power": False
+            
         },
         
         "stage effect": 1,
         
         "psychosis effect": 0,
         
-        "remove after use": True,
+        "remove after use": False,
         
+        #Item given elsewhere in the main code
         #"items": [item_key]
-        }
-    }
-
-item_key = {
-    "id": "key",
-    
-    "name": "a key",
-    
-    "take": True,
-
-    "weight": 0,
-    
-    "description":
-        "A small key. I wonder what it opens...",
-        
-    "inspection":
-        "It's just a small key",
-    
-    "use": {
-        "conditions": { 
-
-        },
-
-        "text":
-        """You open the office door, expecting
-        for answers but you can only see a blue light
-        on an old desk.""",
-        
-        "GETs effect":{
-            "power": False
-        },
-        
-        "stage effect": 2,
-        
-        "psychosis effect": 0,
-        
-        "remove after use": True,
-        
-        "items": [item_medication]
         }
     }
 
@@ -136,11 +93,10 @@ item_writing_on_wall = {
 
     "use": {
         "conditions": { 
-            
+            "magnifier": True
         },
         "text":
-        """Those letters are jumbled. Can't be too hard...
-        R C E A S A""",
+        """Those letters are jumbled. Can't be too hard... """ + caesar_cipher("Sam", 1) ,
 
         "GETs effect": {
 
@@ -226,11 +182,13 @@ item_clock = {
 | |              | || |              | || |              | || |              | || |              | |
 | '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |
  '----------------'  '----------------'  '----------------'  '----------------'  '----------------' """,
-        "GETs effect": {"power": False},
+        "GETs effect": {
+
+        },
         
         "stage effect": 1,
         
-        "psycosis effect": 0,
+        "psychosis effect": 0,
         
         "remove after use": False,
         
@@ -252,6 +210,7 @@ item_window = {
     "inspection":
     """There are 0s and 1s on the window frame."""
     }
+
 item_red_scarf = {
     "id": "scarf",
 
@@ -282,18 +241,23 @@ item_wardrobe = {
     """We have to open it to see more.""",
 
     "use": {
-         
+        "conditions":{
+            "candle": True
+        },
 
         "text":
-        """A red scarf, straight out of Hogwarts. It's more familiar than I care to admit.""",
+        """Opening the wardrobe i see a red scarf, looks like it's straight out of Hogwarts. 
+It's more familiar than I care to admit, Perhaps it's a clue?""",
 
-        "GETs effect": {"power": False},
+        "GETs effect": {
+            "scarf found": True
+        },
 
-        "stage effect": 1,
+        "stage effect": 0,
 
         "psychosis effect": 0,
 
-        "remove after use": False,
+        "remove after use": True,
 
         "items": [item_red_scarf]
         }
@@ -324,7 +288,7 @@ item_coat = {
         
         "stage effect": 1,
         
-        "psycosis effect": -1,
+        "psychosis effect": -1,
         
         "remove after use": True,
 
@@ -372,7 +336,7 @@ item_fusebox = {
         Everything is more clear now, but... you cannot see
         anything that might help you.""",
 
-        "GETs effect": {"power": False},
+        "GETs effect": {"computer on": True},
         
         "stage effect": 0,
         
@@ -406,7 +370,7 @@ item_picture = {
 
     "name": "a family picture",
 
-    "take": True,
+    "take": False,
 
     "weight": 1,
 
@@ -417,6 +381,9 @@ item_picture = {
     """This one is very familiar. I feel like I am somehow related to him.""",
 
     "use": {
+        "conditions":{
+            "scarf found": True
+        },
 
         "text":
         "",
@@ -430,6 +397,43 @@ item_picture = {
         "remove after use": False,
 
         "items":[]
+        }
+    }
+
+item_key = {
+    "id": "key",
+    
+    "name": "a key",
+    
+    "take": True,
+
+    "weight": 0,
+    
+    "description":
+        "A small key. I wonder what it opens...",
+        
+    "inspection":
+        "It's just a small key",
+    
+    "use": {
+        "conditions": { 
+            "items": [item_picture],
+            "comptuer on": True
+        },
+
+        "text":
+        """You open the office door, expecting
+        for answers but you can only see a blue light
+        on an old desk.""",
+        
+        "GETs effect":{
+            "office open": True
+        },
+        "psychosis effect": -1,
+        
+        "remove after use": True,
+        
+        "items": [item_medication]
         }
     }
 
@@ -456,16 +460,32 @@ item_wall_markings = {
     }
 
 item_magnifying_glass = {
-    "id": "magnifying glass",
+    "id": "magnifier",
 
-    "name": "a magnifying glass",
-
+    "name": "a magnifier",
     "take": True,
 
     "weight": 0,
 
     "description":
-    """Cool! I can inspect more now. Maybe I could find something usefull!"""
+    """I might be able to use this help with inspecting things...""",
+
+    "use": {
+        "text":
+        "Now I should be able to inspect things better...",
+
+        "GETs effect": {
+            "magnifier": True
+        },
+
+        "stage effect": 0,
+        
+        "psychosis effect": 0,
+
+        "remove after use": True,
+
+        "items":[]
+        }
     }
 
 item_book = {
@@ -519,19 +539,24 @@ item_computer = {
     "inspection":
     """It looks like my first computer.""",
 
-    "use": {                #conditions
+    "use": {                
+        "conditions": {
+            "computer on": True
+        },
 
         "text": """ """,
 
-        "GETs effect": {},
+        "GETs effect": {
+            
+        },
 
-        "stage effect": 0,
+        "stage effect": 2,
 
-        "psychosis effect": 0,
+        "psychosis effect": 1,
 
         "items":[]
         },
-    "password" : "14280",
+    "password" : "dream445",
     }
 
 item_knife = {
@@ -550,23 +575,22 @@ item_knife = {
     "use": {
          
         
-        "text": "You don't want to do that.",
+        "text": "Really? You hate the game THAT much?",
 
         "GETs effect": {},
         
-        "stage effect": 1,
-        
-        "psycosis effect": -1,
+        "psychosis effect": -6,
         
         "remove after use": False,
         }
     }
+
 item_bowl = {
     "id": "bowl",
 
     "name": "a bowl of noodles",
 
-    "take": False,
+    "take": True,
 
     "description":
     """Just like mom used to make: quick, tasty and… Freshly-made.
@@ -582,10 +606,8 @@ item_bowl = {
         """It also tastes like my moms. Weird.""",
 
         "GETs effect": {},
-
-        "stage effect": 1,
         
-        "psycosis effect": -1,
+        "psychosis effect": 1,
         
         "remove after use": True,
 
@@ -620,17 +642,19 @@ item_door = {
         We have to figure this out.""",
         
     "use": {
-        
+        "conditions":{
+            "door unlocked": True
+        },
         "text": 
         """You open the door and see nothing. You can't control
         yourself and you go out. You see a field and the sky, but
         the sky is not blue. It looks like... .""",
 
-        "GETs effect": {},
+        "GETs effect": {
+            "outside open": True
+        },
         
-        "stage effect": 5,
-        
-        "psycosis effect": 0,
+        "psychosis effect": 0,
         
         "remove after use": True,
 
@@ -644,7 +668,6 @@ item_door = {
 items = {
     "window": item_window,
     "wardrobe": item_wardrobe,
-    "matches": item_matches,
     "candle": item_candle,
     "clock": item_clock,
     "mirror": item_mirror,
@@ -657,7 +680,7 @@ items = {
     "picture": item_picture,
     "fuse": item_fuse,
     "markings": item_wall_markings,
-    "magnifying glass": item_magnifying_glass,
+    "magnifier": item_magnifying_glass,
     "book": item_book,
     "computer": item_computer,
     "paper": item_paper,

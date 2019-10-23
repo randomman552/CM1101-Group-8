@@ -206,6 +206,8 @@ def execute_take(item_id):
                 inventory.append(item_id)
                 current_room["items"].remove(item_id)
                 printstr = "Picked up " + ANSIstyles.BLUE +  item_id["name"] + ANSIstyles.END + "."
+                #Play pickup sound
+                sound.play_pickup_sound()
     #Will print the take message, unless the item has not be picked up.
     return printstr
 
@@ -225,6 +227,7 @@ def execute_drop(item_id):
             inventory.remove(item_id)
             current_room["items"].append(item_id)
             printstr = "Dropped " + ANSIstyles.BLUE + item_id["name"] + ANSIstyles.END + "."
+            sound.play_drop_sound()
     return printstr
 
 def deep_inspect(item_id):
@@ -254,6 +257,7 @@ def execute_inspect(item_id):
             #Print item description
             printstr = item_id["id"] + ":\n" + item_id["description"]
             printstr += "\n" + deep_inspect(item_id)
+            sound.play_inspect_sound()
     return printstr
 
 def check_item_conditions(item_id):
@@ -271,7 +275,11 @@ def check_item_conditions(item_id):
     elif item_id["name"] in rooms:
         if "conditions" in item_id:
             for condition in item_id["conditions"]:
-                if not GETs[condition] == item_id["conditions"][condition]:
+                if condition == "items":
+                    for item in item_id["use"]["conditions"]["items"]:
+                        if not ((item in inventory) or (item in current_room["items"])):
+                            return False
+                elif not GETs[condition] == item_id["use"]["conditions"][condition]:
                     return False
     return output
 
@@ -290,6 +298,7 @@ def apply_item_effects(item_id):
     if "GETs effect" in use:
         for effect in use["GETs effect"]:
             GETs[effect] = use["GETs effect"][effect]
+    sound.play_use_sound()
 
 def execute_use(item_id):
     """Allows player to use an item, takes item_id as an argument"""
@@ -658,6 +667,7 @@ def reset_game():
             rooms[room]["items"].append(item)
     #Regenerate GETs with default values.
     GETs = generate_all_GETs()
+    GETs.update({"inventory": inventory})
 
 def load_reset():
     global current_room
@@ -717,15 +727,25 @@ def main():
         # Main game loop
         endstate = check_win_conditions()
         while endstate == [False, False]:
+            #These variables are edited during the loop, and so need the global keyword.
+            global rooms
+            global current_room
+            global player
+            global previous_room
+            global type_print
             #Clear screen at the begining of each loop
             if os.name == 'nt':
                 os.system("cls")
-            global current_room
-            global player
+            
+            #Changes between each stage of the game are made here
             if player["stage"] >= 2 and player["stage"] < 5:
                 current_room = rooms["Null"]
-            global previous_room
-            global type_print
+                player["stage"] += 1
+            if player["stage"] == 5:
+                rooms["Bathroom"]["description"] = "You're back in the bathroom, you're not sure how you got here. But somehow you now know you must try to reach the exit."
+                current_room = rooms["Bathroom"]
+                player["stage"] += 1
+            
 
             #Update type_print, this variable tells the program whether it should use the slow typing profile or not.
             type_print = not bool(previous_room == current_room)
@@ -746,7 +766,7 @@ def main():
             if command_return == "quit":
                 break
             else:
-                typingprint.slow_print(command_return)
+                typingprint.slow_print(command_return, True)
             
             #If running on windows, pause (pause is not available on mac)
             if os.name == 'nt':

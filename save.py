@@ -27,7 +27,7 @@ def save_data(player, current_room, GETs):
 def items_in_rooms():
     room_items = {}
     for room in rooms:
-        room_items[room] = rooms[room]["items"]["id"]
+        room_items[room] = rooms[room]["items"][0]["id"]
 
     return(room_items)
 

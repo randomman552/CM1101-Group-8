@@ -404,8 +404,7 @@ item_picture = {
     "use": {
 
         "text":
-        """It's me! This one with the red scarf... it's me...
-        blonde, black eyes... .""",
+        "",
 
         "GETs effect": {"power": False},
 
@@ -533,7 +532,7 @@ item_computer = {
 
         "items":[]
         },
-    "password" : "",
+    "password" : "14280",
     }
 
 item_knife = {

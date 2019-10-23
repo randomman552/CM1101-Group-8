@@ -276,6 +276,8 @@ def execute_use(item_id):
                         print_mirror_menu()
                     if item_id["id"] == "computer":
                         password_prompt()
+                    if item_id["id"] == "picture"
+                        print_picture_info()
                     #If the item needs to be removed after use, remove it from inventory or room.
                     if item_id["use"]["remove after use"]:
                         if item_id in inventory:
@@ -284,10 +286,12 @@ def execute_use(item_id):
                             current_room["items"].remove(item_id)
     return printstr
 
+def print_picture_info():
+    print("Is that me?... in the scarf?... " + player["reality"]["hair_length"] + player["reality"]["hair_colour"] + " hair."
+
 def print_mirror_menu():
     global player
     Finished = False
-    
     while Finished != True:
         print("You look into the mirror. It's magical presence enraptures you...")
         print("What would you like to change?")
@@ -302,28 +306,35 @@ def print_mirror_menu():
         print(" [8] Exit")
         i = str(input())
         s = ""
+        if os.name == 'nt':
+            os.system("cls")
+        else:
+            os.system("clear")
+
         for ch in i:
             if ch.isdigit() == True:
                 s = s + ch
         if s == "1":
             print_list(player["options"]["height"], "height")
-            check_appearance()
+            Finished = check_appearance()
+
         elif s == "2":
-            print_list(player["options"]["hair_colour"], "hair_colour")
-            check_appearance()
-        elif s == "3":
-            print_list(player["options"]["hair_length"], "hair_length")
-            check_appearance()
-        elif s == "4":
             print_list(player["options"]["eye_colour"], "eye_colour")
-            check_appearance()
+            Finished = check_appearance()
+        elif s == "3":
+            print_list(player["options"]["hair_colour"], "hair_colour")
+            Finished = check_appearance()
+        elif s == "4":
+            print_list(player["options"]["hair_length"], "hair_length")
+            Finished = check_appearance()
         elif s == "5":
             print_list(player["options"]["gender"], "gender")
-            check_appearance()
+            Finished = check_appearance()
         elif s == "6":
             print("Please enter your name: ")
             name = str(input())
             player["description"]["name"] = name
+            Finished = check_appearance()
         elif s == "7":
             print_appearance()
         elif s == "8":
@@ -350,28 +361,30 @@ def check_appearance():
         counter += 1
     if player["description"]["gender"] == player["reality"]["gender"]:
         counter += 1    
-    
+    print(str(counter))
+    os.system("pause")
     if counter == 6:
-        print("Congratulations you know who you are")
-        
+        typingprint.slow_print("Congratulations you know who you are. \nYou go the office key!!!", True)
+        inventory.append(item_key)
+        return True
+    
+    return False
 
 def print_list(lists, command):
     global player
-    counter = 0
-    for item in lists:
-        print(" [" + str(counter + 1) + "] " + item)
-        counter += 1
-        
-    print(" [" + str(counter + 1) + "] keep it the same")
+    counter = len(lists)
+    print("Pick a value")
+    for line in lists:
+        print(" [" + str(lists.index(line) + 1) + "] " + line)
+
     i = str(input())
     s = ""
     for ch in i:
         if ch.isdigit() == True:
             s = s + ch
-        
-    if s != str(counter):
-        player["description"][command] = lists(s)
-        print("Your " + command + " has been changed.")
+
+    player["description"][command] = lists[int(s)-1]
+    print("Your " + command + " has been changed.")
     
 def password_prompt():
     

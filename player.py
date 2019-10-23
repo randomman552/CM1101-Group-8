@@ -34,8 +34,8 @@ playerdefault = {
         "gender": "???"
     },
     "reality": {
-        "name": "sdaw",
-        "height": "180cm",
+        "name": "Sam",
+        "height": "170cm",
         "eye_colour": "Blue",
         "hair_colour": "Brown",
         "hair_length": "Medium",

@@ -276,10 +276,10 @@ def check_item_conditions(item_id):
         if "conditions" in item_id:
             for condition in item_id["conditions"]:
                 if condition == "items":
-                    for item in item_id["use"]["conditions"]["items"]:
+                    for item in item_id["conditions"]["items"]:
                         if not ((item in inventory) or (item in current_room["items"])):
                             return False
-                elif not GETs[condition] == item_id["use"]["conditions"][condition]:
+                elif not GETs[condition] == item_id["conditions"][condition]:
                     return False
     return output
 

@@ -25,7 +25,7 @@ sound.BG_Music()
 #this is used so that if the user has not changed room, the text is not typed out again.
 type_print = True
 
-def generate_GETs(items):
+def generate_GETs_items(items):
     """This function goes through all items inputted into it, 
     and finds what event triggers are present in all of them.
     These are then added to the GETs dict"""
@@ -54,9 +54,37 @@ def generate_GETs(items):
                         output.update({condition: default_value})
     return output
 
+def generate_GETs_rooms(rooms):
+    output = {}
+    #For each item in the game
+    for room in rooms:
+        #Switch string for actual itme dict
+        room = rooms[room]
+        #If it has conditions
+        if "conditions" in room:
+            #For each condition
+            for condition in room["conditions"]:
+                #Add the condition to the output, ignore any that have already been added
+                if not condition in output:
+                    #Detect the type of variable assigned to the GET, and give each GET a default value of that type
+                    item_type = type(room["conditions"][condition])
+                    if  item_type == bool:
+                        default_value = False
+                    elif item_type == str:
+                        default_value = ""
+                    elif item_type == int or item_type == float:
+                        default_value = 0
+                    output.update({condition: default_value})
+    return output
+
 #Global event triggers dictionary
-#This is generated when the game starts, so any changes
-GETs = generate_GETs(items)
+#This is generated when the game starts, so any changes in items or rooms are reflected here
+def generate_all_GETs():
+    output = generate_GETs_items(items)
+    output.update(generate_GETs_rooms(rooms))
+    return output
+
+GETs = generate_all_GETs()
 
 class ANSIstyles:
     #This class can be used to format text by printing it before the text you want to format.
@@ -129,8 +157,11 @@ def is_valid_exit(exits, chosen_exit):
     It returns True if the exit is valid, and False otherwise. Assume that
     the name of the exit has been normalised by the function normalise_input().
     For example:"""
-
-    return chosen_exit in exits
+    if check_item_conditions(exit_leads_to(exits, chosen_exit)):
+        return chosen_exit in exits
+    else:
+        return None
+    
 
 
 def execute_go(direction):
@@ -234,10 +265,16 @@ def execute_remember(remembering = ""):
 def check_item_conditions(item_id):
     """Checks if item GETs requirements are met"""
     output = True
-    if "conditions" in item_id["use"]:
-        for condition in item_id["use"]["conditions"]:
-            if not GETs[condition] == item_id["use"]["conditions"][condition]:
-                return False
+    if "id" in item_id:
+        if "conditions" in item_id["use"]:
+            for condition in item_id["use"]["conditions"]:
+                if not GETs[condition] == item_id["use"]["conditions"][condition]:
+                    return False
+    elif item_id["name"] in rooms:
+        if "conditions" in item_id:
+            for condition in item_id["conditions"]:
+                if not GETs[condition] == item_id["conditions"][condition]:
+                    return False
     return output
 
 def apply_item_effects(item_id):
@@ -461,11 +498,13 @@ def return_exit(direction, leads_to):
     return direction.upper() + " : " + leads_to + ".\n"
 
 def print_exits(exits):
+    printstr = ANSIstyles.RED + "There is nowhere you can go." + ANSIstyles.END + "\n"
     if len(exits) > 0:
         printstr = "You can " + ANSIstyles.YELLOW +  "GO:\n" + ANSIstyles.END
         for direction in exits:
-            printstr = printstr + return_exit(direction,exit_leads_to(exits, direction))
-        typingprint.slow_print(printstr, type_print)
+            if is_valid_exit(exits,direction):
+                printstr = printstr + return_exit(direction,exit_leads_to(exits, direction)["name"])
+    typingprint.slow_print(printstr, type_print)
 
 def print_take_item(items):
     """This function prints a menu of items which can be taken from the current room"""
@@ -511,7 +550,7 @@ def exit_leads_to(exits, direction):
     exit taken from this dictionary). It returns the name of the room into which
     this exit leads. For example:"""
 
-    return rooms[exits[direction]]["name"]
+    return rooms[exits[direction]]
 
 def print_menu(exits, room_items, inv_items):
     """This function displays the menu of available actions to the player. The
@@ -589,7 +628,7 @@ def reset_game():
             rooms[room]["items"].append(item)
     #Regenerate GETs with default values.
     GETs = {}
-    GETs = generate_GETs(items)
+    GETs = generate_all_GETs()
 
 def load_reset():
     global current_room
@@ -613,7 +652,7 @@ def load_reset():
             rooms[room]["items"].append(item)
     #Regenerate GETs with default values.
     GETs = {}
-    GETs = generate_GETs(items)
+    GETs = generate_all_GETs()
 
 
 def check_win_conditions():

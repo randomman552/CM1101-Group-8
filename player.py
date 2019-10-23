@@ -31,7 +31,7 @@ playerdefault = {
         "eye_colour": ""
         "hair_colour": ""
         "hair_length": ""
-        "gender": "
+        "gender": ""
     },
     "options": {
         "name": ""

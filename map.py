@@ -6,14 +6,14 @@ room_bedroom = {
     #Description of the room, this is shown on screen when the player is in the room.   
     "description":
     """In a large cozy room with not too many items you
-    only find a bed, a nightstand and a wardrobe. There is
-    a big window near your bed. A dim light comes from
-    outside but soon it disappears.""",
+only find a bed, a nightstand and a wardrobe. There is
+a big window near your bed. A dim light comes from
+outside but soon it disappears.""",
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"north": "Bathroom", "west": "Hallway"},
     #Items contains a list of the items available in the room on game start.
     "items": [],
-    "items default": [item_window, item_wardrobe, item_matches, item_candle, item_clock],
+    "items default": [item_window, item_wardrobe, item_candle, item_clock],
     "conditions":{
 
     }
@@ -25,10 +25,10 @@ room_bathroom = {
     #Description of the room, this is shown on screen when the player is in the room.   
     "description":
     """As you open the door you see a dim light. It's just
-    a reflection. You can only approach the mirror as you
-    cannot see anything else... .The mirror is placed on
-    a drawer that you cannot open. There is a black window
-    near the sink.""",
+a reflection. You can only approach the mirror as you
+cannot see anything else... .The mirror is placed on
+a drawer that you cannot open. There is a black window
+near the sink.""",
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"south": "Bedroom"},
     #Items contains a list of the items available in the room on game start.
@@ -45,7 +45,7 @@ room_hallway = {
     #Description of the room, this is shown on screen when the player is in the room.   
     "description":
     """Long and empty with an old wood floor, the hallway leads you to other two
-    rooms: the kitchen and the living room. Hopefully the exit is near.""",
+rooms: the kitchen and the living room. Hopefully the exit is near.""",
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"east": "Bedroom", "west": "Lounge", "north": "Kitchen", "south": "Outside"},
     #Items contains a list of the items available in the room on game start.
@@ -62,8 +62,9 @@ room_living_room = {
     #Description of the room, this is shown on screen when the player is in the room.   
     "description":
     """It looks like nothing you saw untill now. You can see your reflection in
-    the marble floor. Near an armchair there is a table with a fruit bowl on it.
-    The fruits are fresh but the air has a rotten smell.""",
+the marble floor. Near an armchair there is a table with a fruit bowl on it.
+The fruits are fresh but the air has a rotten smell.
+You can see the office door, but it's locked and until the power is back on there is no reason to go in there.""",
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"east": "Hallway", "north": "Office"},
     #Items contains a list of the items available in the room on game start.
@@ -80,7 +81,7 @@ room_office = {
     #Description of the room, this is shown on screen when the player is in the room.   
     "description":
     """A short, cold breeze washes the rotten smell away. You can see a blue light
-    on a computer screen. The window is oppened but you see nothing but a sea shore filled with weird objects.""",
+on a computer screen. The window is oppened but you see nothing but a sea shore filled with weird objects.""",
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"south": "Lounge"},
     #Items contains a list of the items available in the room on game start.
@@ -97,7 +98,7 @@ room_kitchen = {
     #Description of the room, this is shown on screen when the player is in the room.   
     "description":
     """Is this childhood? Old products on the shelf, same cutlery from 30 years ago.
-    Is this a dream or a nightmare? Nothing makes sense.""",
+Is this a dream or a nightmare? Nothing makes sense.""",
     #Exits contains the available exits from the room, this must be set in order for the player to leave the room.
     "exits": {"south": "Hallway"},
     #Items contains a list of the items available in the room on game start.

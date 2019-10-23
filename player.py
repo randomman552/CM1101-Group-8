@@ -20,7 +20,35 @@ def Get_Player_Age():
         os.system("pause")
         quit()
 
-player = {}
+player = {"stage": 0,
+    "sanity": 0,
+    "inventory": [],
+    "description": {
+        "name": "???",
+        "height": "???",
+        "eye_colour": "???",
+        "hair_colour": "???",
+        "hair_length": "???",
+        "gender": "???"
+    },
+    "reality": {
+        "name": "Sam",
+        "height": "170cm",
+        "eye_colour": "Blue",
+        "hair_colour": "Brown",
+        "hair_length": "Medium",
+        "gender": "Male"
+    },
+    "options": {
+        "name": "",
+        "height": ["160cm", "170cm", "180cm"],
+        "eye_colour": ["Blue", "Hazel", "Green"],
+        "hair_colour": ["Brown", "Black", "Red", "Blonde"],
+        "hair_length": ["Short", "Medium", "Long"],
+        "gender": ["Male", "Female"]
+    },
+}
+
 playerdefault = {
     "stage": 0,
     "sanity": 0,

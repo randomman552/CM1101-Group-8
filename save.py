@@ -1,41 +1,40 @@
-from map import *
-from typingprint import *
+import typingprint
 import os
 import datetime
 import glob
+import pickle
+os.chdir(os.getcwd() + "/Saves")
 
 def getfilename():
     """Generate a file name using current datetime """
     return(str(datetime.datetime.now().strftime("%d_%m_%Y_%H-%M-%S")))
 
-def save_data(player, current_room, GETs):
-    fileName = "Saves/" + getfilename() + ".txt"
+def save(player, current_room, GETs, rooms):
+    """Save data to a file."""
+    fileName = getfilename() + ".sav"
+    data_to_save = {
+        "player": player,
+        "room": current_room,
+        "GETs": GETs,
+        "rooms": rooms
+    }
+
     if not os.path.exists(fileName):
-        try:
-            f = open(fileName,"w+")
-            f.write(str(player) + "\n")
-            f.write(str(current_room["name"]) + "\n")
-            f.write(str(GETs) + "\n")
-            f.write(str(items_in_rooms()))
+        f = open(fileName,"ab")
+        pickle.dump(data_to_save,f)
+        f.close()
+        typingprint.slow_print("Game Saved!!!")
+        return()
 
-            slow_print("Game Saved!!!")
-            return()
-        except:
-            slow_print("There was an error saving your game, please try again...")
-    slow_print("There was an error saving your game, please try again...")
 
-def items_in_rooms():
-    room_items = {}
-    for room in rooms:
-        room_items[room] = rooms[room]["items"]["id"]
+def load(filename):
+    f = open(filename, "rb") 
+    data_to_load = pickle.load(f)
+    f.close()
+    return data_to_load
 
-    return(room_items)
-
-def find_saves():
+def list_saves():
     list_file = []
-    
-    os.chdir(os.getcwd())
-    os.chdir(os.getcwd() + "/Saves")
-    for file in glob.glob("*.txt"):
+    for file in glob.glob("*.sav"):
         list_file.append(str(file))
     return(list_file)

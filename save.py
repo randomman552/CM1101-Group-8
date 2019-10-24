@@ -23,8 +23,6 @@ def save(player, current_room, GETs, rooms):
         f = open(fileName,"ab")
         pickle.dump(data_to_save,f)
         f.close()
-
-
 def load(filename):
     f = open(filename, "rb") 
     data_to_load = pickle.load(f)

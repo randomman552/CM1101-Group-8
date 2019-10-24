@@ -234,13 +234,11 @@ def deep_inspect(item_id):
     """This function provides further information about an item if certain items are present in the players inventory
     and if it has an inspect atribute."""
     #If the magnifying glass has been collected or used.
-    try:
-        if GETs["magnifier"] or item_magnifying_glass in inventory:
-            #If the item has an inspection atribute.
-            if "inspection" in item_id:
-                #return in inspection string
-                return("Looking with the magnifying glass:\n" + item_id["inspection"])
-    except:
+    if item_magnifying_glass in inventory:
+        #If the item has an inspection atribute.
+        if "inspection" in item_id:
+            #return in inspection string
+            return("Looking with the magnifying glass:\n" + item_id["inspection"])
         print("You cannot deep inspect without a magnifying glass.")
     #Return an empty string to prevent program crashes
     return ""
@@ -259,7 +257,7 @@ def execute_inspect(item_id):
         if item_id in inventory or item_id in current_room["items"]:
             #Print item description
             printstr = item_id["id"] + ":\n" + item_id["description"]
-            #printstr += "\n" + deep_inspect(item_id)
+            printstr += "\n" + deep_inspect(item_id)
             sound.play_inspect_sound()
     return printstr
 

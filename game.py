@@ -9,7 +9,7 @@ from player import *
 import typingprint
 import pygame
 from pygame import mixer
-from save import *
+import save
 
 #Initialise inventory as a global variable
 inventory = player["inventory"]
@@ -460,7 +460,6 @@ def password_prompt():
     
         if s == items["computer"]["password"]:
             print("This Computer is unlocked..........")
-            player["stage"] += 1
             Finished = True
             rooms["Bathroom"]["items"].append(item_medication)
             items["computer"]["description"] = """The comptuer displays something...\nMedical records: \n Lives at home with their family of 4. 
@@ -468,7 +467,7 @@ Slight hint of psychosis when tested by therapist.
 Given some medication for treatment, patient has stored it in the bathroom, dose of 1 pill per day."""
             typingprint.slow_print(items["computer"]["description"], True)
             typingprint.slow_print("""Just as you finish reading the information on the screen, you hear a quiet roaring noise which slowly builds in volume.
-As the noise becomes deafening, the office fades from sight. 'I don't know where I am' you realise""")
+As the noise becomes deafening, the office fades from sight. 'I don't know where I am' you realise""", True)
             player["stage"] = 2
             GETs["computer used"] = True
         else:
@@ -527,7 +526,7 @@ def execute_command(command):
         elif command[0] == "load":
             printstr = "Loading"
         elif command[0] == "save":
-            save_data(player, current_room, GETs)
+            save.save(player, current_room, GETs, rooms)
             printstr = "Game Saved"
     else:
         #If the command is invalid, change the printstr to reflect so
@@ -651,12 +650,18 @@ def move(exits, direction):
     return rooms[exits[direction]]
 
 def reset_player():
+    """This function resets the player dict to its default value"""
+    #It is done like this instead of just assigning playerdefault to player as
+    #Otherwise edits to player will be made to playerdefault
+    #Preventing consequtive new games
     output = {}
     for item in playerdefault:
         output.update({item:playerdefault[item]})
+    output["inventory"] = []
     return output
 
 def reset_game():
+    """This function resets all of the games variables to their default states"""
     global current_room
     global previous_room
     global player
@@ -681,31 +686,6 @@ def reset_game():
             rooms[room]["items"].append(item)
     #Regenerate GETs with default values.
     GETs = generate_all_GETs()
-    GETs.update({"inventory": inventory})
-
-def load_reset():
-    global current_room
-    global previous_room
-    global player
-    global inventory
-    global rooms
-    global GETs
-
-    current_room = rooms["Bathroom"]
-    previous_room = ""
-
-    player = playerdefault
-    inventory = player["inventory"]
-
-    for room in rooms:
-        #Clear all items from each room.
-        rooms[room]["items"] = []
-        #Add each item to that room.
-        for item in rooms[room]["items default"]:
-            rooms[room]["items"].append(item)
-    #Regenerate GETs with default values.
-    GETs = {}
-    GETs = generate_all_GETs()
 
 
 def check_win_conditions():
@@ -727,36 +707,44 @@ def check_win_conditions():
 def main():
     #This loop allows the main menu to be reopened when we break out of the main game loop.
     while True:
-
-        option = mainmenu.menu(["New game ", "Load game", "Quit     "])
+        #These variables are edited during the loop, and so need the global keyword.
+        global rooms
+        global current_room
+        global player
+        global previous_room
+        global type_print
+        global GETs
+        #If there are no saves, remove the load game option
+        if len(save.list_saves()) > 0:
+            option = mainmenu.menu(["New game ", "Load game", "Quit     "])
+        else:
+            option = mainmenu.menu(["New game ", "Quit     "])
+        #Main menu logic
         if option.strip() == "Quit":
             quit()
         elif option.strip() == "Load game":
-            mainmenu.menu(find_saves())
-            load_reset()
-            #Need loading code before implementation.
+            option = mainmenu.menu(save.list_saves())
+            everything = save.load(option)
+            player = everything["player"]
+            current_room = everything["room"]
+            GETs = everything["GETs"]
+            rooms = everything["rooms"]
         elif option.strip() == "New game":
             reset_game()
         
         # Main game loop
         endstate = check_win_conditions()
         while endstate == [False, False]:
-            #These variables are edited during the loop, and so need the global keyword.
-            global rooms
-            global current_room
-            global player
-            global previous_room
-            global type_print
             #Clear screen at the begining of each loop
             if os.name == 'nt':
                 os.system("cls")
             
             #Changes between each stage of the game are made here
-            if player["stage"] >= 2 and player["stage"] < 5:
+            if player["stage"] >= 2 and player["stage"] < 7:
                 current_room = rooms["Null"]
                 previous_room = ""
                 player["stage"] += 1
-            if player["stage"] == 5:
+            if player["stage"] == 7:
                 rooms["Bathroom"]["description"] = "You're back in the bathroom, you're not sure how you got here. You know you should take your meds, then get out of here."
                 current_room = rooms["Bathroom"]
                 player["stage"] += 1

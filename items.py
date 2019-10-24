@@ -88,27 +88,8 @@ item_writing_on_wall = {
 
     "inspection":
     """Nothing more than letters. I have to
-    figure this out, might be a name...""",
-
-    "use": {
-        "conditions": { 
-            "magnifier": True
-        },
-        "text":
-        """Those letters are jumbled. Can't be too hard... """ + caesar_cipher("sam", 1) ,
-
-        "GETs effect": {
-
-            },
-        
-        "stage effect": 0,
-        
-        "sanity effect": 0,
-        
-        "remove after use": False,
-        
-        "items":[]
-        }
+    figure this out, might be a name...
+    It reads: """ + caesar_cipher("sam", 1)
     }
 
 item_candle = {
@@ -279,11 +260,13 @@ item_coat = {
     """Nothing in the pokets, I feel like something is missing.""",
 
     "use": {
-
+        "conditions":{
+            "meds used": True
+        },
         "text": "You put the coat on, you find its warmth comforting.",
         
         "GETs effect": {
-            "coat": True
+            "coat on": True
         },
         
         "stage effect": 0,
@@ -510,20 +493,18 @@ item_computer = {
         },
 
         "text": """Hello! How do you find our puzzles? You might be tired,
-        the transfer process wasn't an easy one. Recover yourself and get out of here.
-        The more time you spend in this house, harder will be to come back to life.
-        If we can solve the puzzles and go out, we deserve it! Don't forget about the
-        pills. They are behind the mirror. There is a chance some programmes have some
-        failures, but the environment won't affect you. I just hope you remember... .
-        Otherwise, you have to complete every quest or the computer will erase us.
-        One last thing! You have placed some clues in the puzzles in order to help
-        you remember. Use them wise, they don't last for long!""",
+the transfer process wasn't an easy one. Recover yourself and get out of here.
+The more time you spend in this house, harder will be to come back to life.
+If we can solve the puzzles and go out, we deserve it! Don't forget about the
+pills. They are behind the mirror. There is a chance some programmes have some
+failures, but the environment won't affect you. I just hope you remember... .
+Otherwise, you have to complete every quest or the computer will erase us.
+One last thing! You have placed some clues in the puzzles in order to help
+you remember. Use them wise, they don't last for long!""",
 
         "GETs effect": {
             "computer used": True
         },
-
-        "stage effect": 1,
 
         "remove after use": True,
 
@@ -633,12 +614,7 @@ item_door = {
             "meds used": True
         },
         "text": 
-        """You open the door and see nothing. You can't control
-        yourself and you go out. You see a field and the sky, but
-        the sky is not blue. It looks like... your bedroom ceiling.
-        You are in your bed. Maybe it was just a dream... or a nightmare.
-        Your alarm clock is ringing now... 12:00. I overslept again!
-        I need my pills first!",
+        """You open the door to the outside world, after you put on your coat, it's time to leave.""",
 
         "GETs effect": {
             "outside open": True
@@ -656,6 +632,7 @@ item_door = {
 #Items must be put in this list to be usable.
 #Item should be put in like this: "example": item_example
 items = {
+    "medication":item_medication,
     "window": item_window,
     "wardrobe": item_wardrobe,
     "candle": item_candle,

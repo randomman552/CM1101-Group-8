@@ -120,7 +120,8 @@ room_outside = {
     "items": [],
     "items default": [],
     "conditions":{
-        "outside open": True
+        "outside open": True,
+        "coat on": True
     }
 }
 

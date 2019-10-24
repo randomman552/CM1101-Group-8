@@ -239,6 +239,7 @@ def deep_inspect(item_id):
         if "inspection" in item_id:
             #return in inspection string
             return("Looking with the magnifying glass:\n" + item_id["inspection"])
+        print("You cannot deep inspect without a magnifying glass.")
     #Return an empty string to prevent program crashes
     return ""
 

@@ -234,7 +234,7 @@ def deep_inspect(item_id):
     """This function provides further information about an item if certain items are present in the players inventory
     and if it has an inspect atribute."""
     #If the magnifying glass has been collected or used.
-    if GETs["magnifier"] or item_magnifying_glass in inventory:
+    if item_magnifying_glass in inventory:
         #If the item has an inspection atribute.
         if "inspection" in item_id:
             #return in inspection string
@@ -710,7 +710,6 @@ def check_win_conditions():
 
 def load_game():
     """Loads game from the selected option on the main menu"""
-    reset_game()
     global player
     global current_room
     global GETs

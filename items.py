@@ -363,26 +363,8 @@ item_picture = {
     """I remember every face but this one... I can't recall any name though.""",
 
     "inspection":
-    """This one is very familiar. I feel like I am somehow related to him.""",
+    """The photograph shows two people standing next to each other. On the left is a man wearing a red scarf and a pendant. \n Their hair is brown and medium length and they appear to have blue eyes.""",
 
-    "use": {
-        "conditions":{
-            "scarf found": True
-        },
-
-        "text":
-        "",
-
-        "GETs effect": {"power": False},
-
-        "stage effect": 0,
-        
-        "sanity effect": 0,
-
-        "remove after use": False,
-
-        "items":[]
-        }
     }
 
 item_key = {

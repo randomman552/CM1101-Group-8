@@ -524,10 +524,14 @@ def execute_command(command):
         if command[0] == "quit":
             printstr = "quit"
         elif command[0] == "load":
-            printstr = "Loading"
+            if len(save.list_saves()) > 0:
+                load_game()
+                printstr = "Loading"
+            else:
+                printstr = ANSIstyles.RED + "There are no saves to load!!" + ANSIstyles.END
         elif command[0] == "save":
             save.save(player, current_room, GETs, rooms)
-            printstr = "Game Saved"
+            printstr = "Game saved!!!"
     else:
         #If the command is invalid, change the printstr to reflect so
         printstr = ANSIstyles.RED + "Invalid command!" + ANSIstyles.END
@@ -674,6 +678,7 @@ def reset_game():
     #Reset player dictionary.
     player = reset_player()
     #Reassign inventory to the dict entry
+    player["inventory"] = []
     inventory = player["inventory"]
     #Clear rooms of all items and add the default items for each room to that room.
     #This is done like this rather than assigning the default items value to items to prevent the editing of the default values.
@@ -703,6 +708,20 @@ def check_win_conditions():
         Output[1] = True
     return Output
 
+def load_game():
+    """Loads game from the selected option on the main menu"""
+    reset_game()
+    global player
+    global current_room
+    global GETs
+    global rooms
+    option = mainmenu.menu(save.list_saves())
+    everything = save.load(option)
+    player = everything["player"]
+    current_room = everything["room"]
+    GETs = everything["GETs"]
+    rooms = everything["rooms"]
+
 # This is the entry point of our program
 def main():
     #This loop allows the main menu to be reopened when we break out of the main game loop.
@@ -714,21 +733,18 @@ def main():
         global previous_room
         global type_print
         global GETs
+
         #If there are no saves, remove the load game option
         if len(save.list_saves()) > 0:
             option = mainmenu.menu(["New game ", "Load game", "Quit     "])
         else:
             option = mainmenu.menu(["New game ", "Quit     "])
+
         #Main menu logic
         if option.strip() == "Quit":
             quit()
         elif option.strip() == "Load game":
-            option = mainmenu.menu(save.list_saves())
-            everything = save.load(option)
-            player = everything["player"]
-            current_room = everything["room"]
-            GETs = everything["GETs"]
-            rooms = everything["rooms"]
+            load_game()
         elif option.strip() == "New game":
             reset_game()
         

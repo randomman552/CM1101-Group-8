@@ -23,8 +23,6 @@ def save(player, current_room, GETs, rooms):
         f = open(fileName,"ab")
         pickle.dump(data_to_save,f)
         f.close()
-        typingprint.slow_print("Game Saved!!!")
-        return()
 
 
 def load(filename):
